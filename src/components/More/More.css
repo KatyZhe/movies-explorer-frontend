@@ -1,0 +1,51 @@
+.more {
+  padding-bottom: 80px;
+  display: flex;
+  justify-content: center;
+}
+
+.more__button {
+  display: block;
+  border: none;
+  cursor: pointer;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  min-width: 1140px;
+  margin: 0 70px;
+  padding: 10px 20px;
+  transition: opacity 0.3s, transform 0.3s;
+  font-size: 12px;
+  line-height: 15px;
+}
+
+@media (min-width: 320px) and (max-width: 768px) {
+  .more__button {
+    max-width: 300px;
+    min-width: 300px;
+    margin: 0 10px;
+  }
+}
+
+.more__button:active {
+  transform: scale(0.9);
+}
+
+.more__button:hover {
+  opacity: 0.8;
+}
+
+@media (min-width: 768px) and (max-width: 1279px) {
+  .more__button {
+    max-width: 700px;
+    min-width: 700px;
+    margin: 0 30px;
+  }
+}
+
+.more__button:active {
+  transform: scale(0.9);
+}
+
+.more__button:hover {
+  opacity: 0.8;
+}

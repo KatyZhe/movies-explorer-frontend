@@ -1,0 +1,110 @@
+.promo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #073042;
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+.promo__container {
+  height: 320px;
+  background-image: url("../../images/promo-background.svg");
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  margin: auto;
+  margin-top: 82px;
+  margin-bottom: 122px;
+  padding: 0;
+}
+
+.promo__title {
+  font-family: 'Inter', Verdana, Tahoma, sans-serif;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+  padding: 0;
+  color: #fff;
+  font-weight: 400;
+  font-size: 50px;
+  line-height: 58px;
+  letter-spacing: -4%;
+  max-width: 730px;
+  z-index: 2;
+}
+
+.promo__nav {
+  box-sizing: border-box;
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  display: flex;
+  justify-content: center;
+  width: 100vw;
+  height: 66px;
+}
+
+.promo__link {
+  display: block;
+  padding: 24px 40px;
+  font-family: 'Inter', Verdana, Tahoma, sans-serif;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .promo {
+    height: 636px;
+  }
+
+  .promo__container {
+    height: 248px;
+    margin-top: 142px;
+    margin-bottom: 180px;
+  }
+
+  .promo__title {
+    padding-top: 65px;
+    font-size: 31px;
+    line-height: 39px;
+    max-width: 300px;
+    max-height: 117px;
+  }
+
+  .promo__link {
+    display: block;
+    padding: 25px 19px;
+    font-family: 'Inter', Verdana, Tahoma, sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    line-height: 16px;
+    color: #ffffff;
+    text-decoration: underline;
+  }
+}
+
+@media screen and (min-width: 768px) and (max-width: 1279px) {
+  .promo {
+    height: 850px;
+  }
+
+  .promo__container {
+    margin-top: 224px;
+    margin-bottom: 240px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  .promo {
+    height: 590px;
+  }
+}
