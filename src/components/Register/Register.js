@@ -1,31 +1,11 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React from "react";
+import { Link } from "react-router-dom";
 import "./Register.css";
+import useForm from "../../hooks/useForm";
 import logo from "../../images/logo.svg";
 
-const Register = ({ onRegister }) => {
-  const navigate = useNavigate();
-  const [formValue, setFormValue] = useState({
-    name: "",
-    password: "",
-  });
-
-  const handleChange = (evt) => {
-    const { name, value } = evt.target;
-
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    if (!formValue.email || !formValue.password) {
-      return;
-    }
-    onRegister(formValue);
-  };
+const Register = () => {
+  const { enteredValues, errors, handleChange } = useForm();
 
   return (
     <section className="register__container">
@@ -37,7 +17,7 @@ const Register = ({ onRegister }) => {
         <h1 className="register__title">Добро пожаловать!</h1>
       </div>
 
-      <form className="register__form form" onSubmit={handleSubmit}>
+      <form className="register__form form">
         <label className="register__label" htmlFor="name">
           Имя
         </label>
@@ -48,10 +28,10 @@ const Register = ({ onRegister }) => {
           name="name"
           minLength={2}
           required
-          value={formValue.name || ""}
+          value={enteredValues.name || ""}
           onChange={handleChange}
         />
-        <span className="register__error">При регистрации пользователя произошла ошибка.</span>
+        <span className="register__error">{errors.name}</span>
         <label className="register__label" htmlFor="email">
           E-mail
         </label>
@@ -61,11 +41,11 @@ const Register = ({ onRegister }) => {
           id="email"
           name="email"
           required
-          value={formValue.email || ""}
+          value={enteredValues.email || ""}
           onChange={handleChange}
           pattern={"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"}
         />
-        <span className="register__error">Пользователь с таким email уже существует.</span>
+        <span className="register__error">{errors.email}</span>
         <label className="register__label" htmlFor="password">
           Пароль
         </label>
@@ -76,10 +56,10 @@ const Register = ({ onRegister }) => {
           name="password"
           minLength={6}
           required
-          value={formValue.password || ""}
+          value={enteredValues.password || ""}
           onChange={handleChange}
         />
-        <span className="register__error">Пароль не соответствует правилам.</span>
+        <span className="register__error">{errors.password}</span>
         <button
           className="register__button"
           type="submit"

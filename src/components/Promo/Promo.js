@@ -1,15 +1,13 @@
 import React from "react";
 import "./Promo.css";
-import { HashLink as Link } from 'react-router-hash-link';
+import { HashLink as Link } from "react-router-hash-link";
 
 const Promo = () => {
   return (
     <section className="promo">
-      <div className="promo__container">
-        <h1 className="promo__title">
+      <h1 className="promo__title">
         Учебный проект студента факультета Веб-разработки.
-        </h1>
-      </div>
+      </h1>
       <nav className="promo__nav">
         <Link to="/#AboutProject" className="promo__link">
           О проекте

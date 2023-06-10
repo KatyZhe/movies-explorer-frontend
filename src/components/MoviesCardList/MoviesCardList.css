@@ -7,32 +7,29 @@
   max-width: 1280px;
   margin: auto;
   display: grid;
-  grid-template-columns: repeat(4, 270px);
-  gap: 38px 20px;
+  grid-template-columns: repeat(3, 364px);
+  gap: 30px 24px;
   justify-content: center;
   padding: 0;
-  margin-top: 10px;
+  margin-top: 70px;
   margin-bottom: 50px;
+  
 }
 
 @media screen and (min-width: 768px) and (max-width: 1279px) {
-  .cards {
-    margin-top: 80px;
-  }
-
   .cards__list {
     grid-template-columns: repeat(2, 339px);
-    gap: 30px;
+    gap: 36px 30px;
   }
 }
 
 @media screen and (min-width: 320px) and (max-width: 768px) {
   .cards {
-    margin-top: 50px;
+    margin-top: 40px;
   }
 
   .cards__list {
     grid-template-columns: repeat(1, 300px);
-    row-gap: 34px;
+    row-gap: 16px;
   }
 }

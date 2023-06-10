@@ -1,34 +1,29 @@
 import "./Header.css";
 import { Link, useMatch } from "react-router-dom";
 import Navigation from "../Navigation/Navigation";
+import logo from "../../images/header-logo.svg"
 
 const Header = ({ loggedIn }) => {
   const href = useMatch({ path: `${window.location.pathname}`, end: false });
-  const isRootURL = href.pathnameBase === "/";
-  const logRegURL = (href.pathnameBase === "/signin" || href.pathnameBase === "/signup");
+  const logRegURL =
+    href.pathnameBase === "/signin" ||
+    href.pathnameBase === "/signup" ||
+    href.pathnameBase === "/notfound";
 
   function renderHeaderStyles() {
-    if (isRootURL) {
-      return (
+    if (logRegURL) {
+      return (<header style={{ display: "none" }}></header>);
+    } else {
+      return(
         <header className="header">
-          <Link to="/" className="header__link">
-            <div className="header__logo"></div>
-          </Link>
-          <Navigation loggedIn={loggedIn} />
-        </header>
-      );
-    } else if (logRegURL) {
-      <header style={{display:'none'}}></header>
-    }
-    return (
-      <header className="header_white">
         <Link to="/" className="header__link">
-          <div className="header__logo_white"></div>
+          <img src={logo} alt="логотип заголовка" className="header__logo" />
         </Link>
-        <Navigation loggedIn={true} />
+        <Navigation loggedIn={loggedIn} />
       </header>
-    );
-  };
+      );
+    }
+  }
   return renderHeaderStyles();
 };
 

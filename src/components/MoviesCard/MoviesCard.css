@@ -1,91 +1,87 @@
 .card {
-  width: 270px;
+  padding: 0;
+  background-color: #FDFDFD;
+  list-style: none;
 }
 
 .card__image {
-  width: 270px;
-  height: 151px;
-  border-radius: 6px;
+  margin-top: 14px;
+  width: 364px;
+  height: 203px;
 }
 
-.card__description {
+.card__element {
   display: flex;
   justify-content: space-between;
-  padding: 0;
-  margin-bottom: 29px;
-  margin-top: 14px;
 }
 
-.card__name {
-  display: inline-flex;
-  align-items: center;
+.card__title {
+  color: #000;
+  max-width: 220px;
+  font-size: 15px;
   font-weight: 500;
-  font-size: 13px;
-  line-height: 16px;
-  color: #000000;
+  line-height: 18px;
+  margin: 14px auto 0 14px;
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
 }
 
+.card__button {
+  margin: 19px 14px 0 auto;
+  height: 30px;
+  width: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 36px;
+  transition: opacity .2s linear;
+}
+
+.card__button:hover {
+  opacity: .6;
+  cursor: pointer;
+}
+
+.card__button_inactive {
+  background: #f9f9f9 url(../../images/notliked-icon.svg) center no-repeat;
+}
+
+.card__button_active {
+  background: #f9f9f9 url(../../images/liked-icon.svg) center no-repeat;
+}
+
+.card__button_delete {
+  width: 30px;
+  height: 30px;
+  background: #f9f9f9 url(../../images/icon-delete.svg) center no-repeat;
+}
+
 .card__duration {
-  display: block;
-  font-weight: 400;
+  margin: 9px auto 0 14px;
+  color: #A0A0A0;
   font-size: 11px;
   line-height: 13px;
-  color: #a0a0a0;
-  padding-top: 6px;
-  border-top: 1px solid #E8E8E8;
-}
-
-.card__liked {
-  background-image: url('../../images/liked-icon.svg');
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-  border: none;
-  border-radius: 12px;
-  background-repeat: no-repeat;
-}
-
-.card__notliked {
-  width: 21px;
-  height: 21px;
-  background-image: url("../../images/notliked-icon.svg");
-  border: none;
-  border-radius: 50px;
-  cursor: pointer;
-  display: block;
 }
 
 @media screen and (min-width: 768px) and (max-width: 1279px) {
-  .card {
-    width: 339px;
-  }
-
   .card__image {
     width: 339px;
     height: 190px;
   }
 
+  .card__title {
+    max-width: 290px;
+  }
 }
 
-@media screen and (min-width: 320px) and (max-width: 767px) {
-  .card {
-    width: 300px;
+@media screen and (min-width: 320px) and (max-width: 768px) {
+  .card__title {
+    font-size: 12px;
+    line-height: 17px;
   }
 
   .card__image {
     width: 300px;
     height: 168px;
-  }
-
-  .card__description {
-    margin-top: 15px;
-  }
-
-  .card__name {
-    font-size: 12px;
-    line-height: 15px;
   }
 }
