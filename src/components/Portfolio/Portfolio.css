@@ -1,4 +1,6 @@
 .portfolio {
+  max-width: 1200px;
+  margin: auto;
   padding: 0 70px 125px;
 }
 
@@ -34,9 +36,21 @@
 }
 
 .portfolio__link {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  align-items: center;
   color: #000000;
   text-decoration: none;
   transition: 0.3s ease;
+}
+
+.portfolio__link::after {
+  content: '↗';
+  position: absolute;
+  right: 0;
 }
 
 .portfolio__link:hover {

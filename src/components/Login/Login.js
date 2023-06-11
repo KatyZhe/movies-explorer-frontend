@@ -27,7 +27,7 @@ const Login = ({ onLogin }) => {
   };
 
   return (
-    <div className='login__container'>
+    <section className='login__container'>
       <div className='login__header'>
         <Link to='/'>
           <img src={logo} alt='Логотип' className='login__logo' />
@@ -74,7 +74,7 @@ const Login = ({ onLogin }) => {
           Регистрация
         </Link>
       </div>
-    </div>
+    </section>
   );
 };
 

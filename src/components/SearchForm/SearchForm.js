@@ -6,7 +6,13 @@ function SearchForm() {
       <div className="search__box">
         <form className="search__form">
           <div className="search__icon"></div>
-          <input className="search__input" type="text" name="search" placeholder="Фильм" required />
+          <input
+            className="search__input"
+            type="text"
+            name="search"
+            placeholder="Фильм"
+            required
+          />
           <button className="search__button" type="submit"></button>
         </form>
         <div className="search__toggle">

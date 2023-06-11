@@ -8,11 +8,13 @@ import Footer from "../Footer/Footer";
 const Main = () => {
   return (
     <>
-      <Promo />
-      <AboutProject />
-      <Technologies />
-      <AboutMe />
-      <Portfolio />
+      <main>
+        <Promo />
+        <AboutProject />
+        <Technologies />
+        <AboutMe />
+        <Portfolio />
+      </main>
       <Footer />
     </>
   );

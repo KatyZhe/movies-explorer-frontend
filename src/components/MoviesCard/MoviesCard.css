@@ -2,6 +2,7 @@
   padding: 0;
   background-color: #FDFDFD;
   list-style: none;
+  box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.08);
 }
 
 .card__image {

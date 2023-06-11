@@ -3,7 +3,7 @@ import photo from "../../images/photo_pass.jpg";
 
 const AboutMe = () => {
   return (
-    <div className="about-me" id="AboutStudent">
+    <section className="about-me" id="AboutStudent">
       <h2 className="about-me__title">Студент</h2>
       <div className="about-me__content">
         <div className="about-me__info">
@@ -16,7 +16,8 @@ const AboutMe = () => {
             WordPress. Мне было больше интересно ковыряться в начинке CMS, чем
             заниматься SMM. После 15летнего опыта в качестве инженера-технолога
             в Аэрофлоте я решила сменить деятельность на ту, о которой давно
-            думала и мечтала. В свободное время я люблю много гулять, читать книги и заниматься йогой.
+            думала и мечтала. В свободное время я люблю много гулять, читать
+            книги и заниматься йогой.
           </span>
           <a
             className="about-me__link"
@@ -29,7 +30,7 @@ const AboutMe = () => {
         </div>
         <img className="about-me__photo" src={photo} alt="Мое фото" />
       </div>
-    </div>
+    </section>
   );
 };
 

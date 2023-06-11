@@ -1,4 +1,6 @@
 .search {
+  max-width: 1200px;
+  margin: auto;
   padding: 57px 88px 0;
 }
 
