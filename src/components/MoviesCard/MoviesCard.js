@@ -35,7 +35,7 @@ const MoviesCard = ({ movie }) => {
           )}
         </div>
       </div>
-      <img src={movie.image} alt={movie.title} className="card__image"></img>
+      <img src={movie.image} alt={movie.name} className="card__image"></img>
     </li>
   );
 };
