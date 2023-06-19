@@ -1,29 +1,19 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './Login.css';
 import logo from '../../images/header-logo.svg';
+import isEmail from 'validator/es/lib/isEmail';
+import useForm from "../../hooks/useForm";
 
 const Login = ({ onLogin }) => {
-  const [formValue, setFormValue] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (evt) => {
-    const { name, value } = evt.target;
-
-    setFormValue({
-      ...formValue,
-      [name]: value,
-    });
-  };
+  const { enteredValues, handleChange, errors } = useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    if (!formValue.email || !formValue.password) {
+    if (!enteredValues.email || !enteredValues.password) {
       return;
     }
-    onLogin(formValue);
+    onLogin(enteredValues);
   };
 
   return (
@@ -46,11 +36,10 @@ const Login = ({ onLogin }) => {
           id='email'
           name='email'
           required
-          value={formValue.email || ""}
+          value={enteredValues.email || ""}
           onChange={handleChange}
-          pattern={'^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$'}
         />
-        <span className='register__error'>{formValue.email}</span>
+        <span className='register__error'>{errors.email}</span>
         <label className='login__label' htmlFor='password'>
           Пароль
         </label>
@@ -60,11 +49,11 @@ const Login = ({ onLogin }) => {
           id='password'
           name='password'
           required
-          value={formValue.password || ""}
+          value={enteredValues.password || ""}
           onChange={handleChange}
         />
-        <span className='register__error'>{formValue.password}</span>
-        <button className='login__button' type='submit'>
+        <span className='register__error'>{errors.password}</span>
+        <button className='login__button' type='submit' disabled={!isEmail}>
           Войти
         </button>
       </form>

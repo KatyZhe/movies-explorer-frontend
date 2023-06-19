@@ -11,6 +11,10 @@
   height: 203px;
 }
 
+.card__link {
+  text-decoration: none;
+}
+
 .card__element {
   display: flex;
   justify-content: space-between;

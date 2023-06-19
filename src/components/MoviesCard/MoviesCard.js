@@ -1,28 +1,54 @@
-import "./MoviesCard.css";
-import React from "react";
-import { useLocation } from "react-router-dom";
+import './MoviesCard.css';
+import { useEffect, useState } from 'react';
+import { useResolvedPath } from 'react-router-dom';
 
-const MoviesCard = ({ movie }) => {
-  const [favorite, setFavorite] = React.useState(false);
+const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
+  const { pathname } = useResolvedPath();
+  const [favorite, setFavorite] = useState(false);
 
   function handleFavoriteToogle() {
-    setFavorite(!favorite);
+    const newFavorite = !favorite;
+    const savedFilm = filmsSaved.filter((obj) => {
+      return obj.movieId === film.id;
+    });
+    savedMoviesToggle({ ...film, _id: savedFilm.length > 0 ? savedFilm[0]._id : null }, newFavorite);
   }
 
-  const { pathname } = useLocation();
+  function handleFavoriteDelete() {
+    savedMoviesToggle(film, false);
+  }
+
+  function getMovieDuration(mins) {
+    return `${Math.floor(mins / 60)}ч ${mins % 60}м`;
+  }
+
+  useEffect(() => {
+    if (pathname !== '/saved-movies') {
+      const savedFilm = filmsSaved.filter((obj) => {
+        return obj.movieId === film.id;
+      });
+
+      if (savedFilm.length > 0) {
+        setFavorite(true);
+      } else {
+        setFavorite(false);
+      }
+    }
+  }, [pathname, filmsSaved, film.id]);
 
   return (
     <li className="card">
       <div className="card__element">
         <div className="card_description">
-          <p className="card__title">{movie.name}</p>
-          <p className="card__duration">{movie.duration}</p>
+          <p className="card__title">{film.nameRU}</p>
+          <p className="card__duration">{getMovieDuration(film.duration)}</p>
         </div>
         <div className="card__buttons">
           {pathname === "/saved-movies" ? (
             <button
               type="button"
               className="card__button card__button_delete"
+              onClick={handleFavoriteDelete}
             />
           ) : (
             <button
@@ -35,7 +61,19 @@ const MoviesCard = ({ movie }) => {
           )}
         </div>
       </div>
-      <img src={movie.image} alt={movie.name} className="card__image"></img>
+      <a
+        className="card__link"
+        href={film.trailerLink}
+        target="_blank"
+        rel="noreferrer"
+      >
+        <img
+          src={pathname === '/saved-movies' ? `${film.image}` :
+          `https://api.nomoreparties.co${film.image.url}`}
+          alt={film.nameRU}
+          className="card__image"
+        ></img>
+      </a>
     </li>
   );
 };

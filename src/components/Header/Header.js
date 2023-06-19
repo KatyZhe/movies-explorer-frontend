@@ -3,7 +3,7 @@ import { Link, useMatch } from "react-router-dom";
 import Navigation from "../Navigation/Navigation";
 import logo from "../../images/header-logo.svg"
 
-const Header = ({ loggedIn }) => {
+const Header = ({ isLoggedIn }) => {
   const href = useMatch({ path: `${window.location.pathname}`, end: false });
   const logRegURL =
     href.pathnameBase === "/signin" ||
@@ -19,7 +19,7 @@ const Header = ({ loggedIn }) => {
         <Link to="/" className="header__link">
           <img src={logo} alt="логотип заголовка" className="header__logo" />
         </Link>
-        <Navigation loggedIn={loggedIn} />
+        <Navigation isLoggedIn={isLoggedIn} />
       </header>
       );
     }

@@ -3,7 +3,7 @@ import { Link, useResolvedPath } from "react-router-dom";
 import "./Navigation.css";
 import BurgerMenu from "../BurgerMenu/BurgerMenu";
 
-const Navigation = ({ loggedIn }) => {
+const Navigation = ({ isLoggedIn }) => {
   const [isBurgerMenuOpen, setIsBurgerMenuOpen] = useState(false);
 
   const toggleBurgerMenu = () => {
@@ -14,7 +14,7 @@ const Navigation = ({ loggedIn }) => {
 
   return (
     <nav className="navigation">
-      {loggedIn ? (
+      {isLoggedIn ? (
         <>
           <div className="navigation__movies">
             <Link
@@ -43,7 +43,7 @@ const Navigation = ({ loggedIn }) => {
               <button className="navigation__button_account">Аккаунт</button>
             </Link>
           </div>
-          {!isBurgerMenuOpen && loggedIn ? (
+          {!isBurgerMenuOpen && isLoggedIn ? (
             <button className="burger__button" onClick={toggleBurgerMenu} />
           ) : (
             <BurgerMenu onClose={toggleBurgerMenu} />

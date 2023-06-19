@@ -1,11 +1,24 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
-import useForm from "../../hooks/useForm";
 import logo from "../../images/logo.svg";
+import useForm from "../../hooks/useForm";
+import isEmail from 'validator/es/lib/isEmail';
 
-const Register = () => {
-  const { enteredValues, errors, handleChange } = useForm();
+const Register = ({ onRegister, isLoggedIn }) => {
+  const { enteredValues, handleChange, errors } = useForm();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigate('/movies');
+    }
+  }, [isLoggedIn, navigate]);
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onRegister(enteredValues);
+  };
 
   return (
     <section className="register__container">
@@ -17,7 +30,7 @@ const Register = () => {
         <h1 className="register__title">Добро пожаловать!</h1>
       </div>
 
-      <form className="register__form form">
+      <form className="register__form form" onSubmit={handleSubmit}>
         <label className="register__label" htmlFor="name">
           Имя
         </label>
@@ -43,7 +56,6 @@ const Register = () => {
           required
           value={enteredValues.email || ""}
           onChange={handleChange}
-          pattern={"^\\w+([\\.-]?\\w+)*@\\w+([\\.-]?\\w+)*(\\.\\w{2,3})+$"}
         />
         <span className="register__error">{errors.email}</span>
         <label className="register__label" htmlFor="password">
@@ -63,6 +75,7 @@ const Register = () => {
         <button
           className="register__button"
           type="submit"
+          disabled={!isEmail ? true : ''}
         >
           Зарегистрироваться
         </button>
