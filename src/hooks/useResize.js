@@ -1,12 +1,12 @@
 import { useEffect, useCallback, useState } from 'react';
 
-export default function useScreenSize() {
+export default function useResize() {
   const getScreenWidth = useCallback(() => window.innerWidth, []);
   const [screenWidth, setScreenWidth] = useState(getScreenWidth());
 
   useEffect(() => {
 
-    function handleScreenResize() {
+    function handleResize() {
       setScreenWidth(getScreenWidth());
     };
 
@@ -18,12 +18,12 @@ export default function useScreenSize() {
       if (!resizeTimer) {
         resizeTimer = setTimeout(() => {
           resizeTimer = null;
-          handleScreenResize();
-        }, 1000); // 1 кадр в секунду
+          handleResize();
+        }, 1000);
       }
     };
 
-    return () => window.removeEventListener('resize', handleScreenResize);
+    return () => window.removeEventListener('resize', handleResize);
   }, [getScreenWidth]);
 
   return screenWidth;

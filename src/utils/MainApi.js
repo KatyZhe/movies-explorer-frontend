@@ -21,4 +21,15 @@ export default class MainApi {
       (res) => this._checkResponse(res)
     );
   }
+
+  updateUserInfo(data) {
+    return fetch(`${this._url}/users/me`, {
+      method: "PATCH",
+      headers: this._headers,
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+      }),
+    }).then((res) => this._checkResponse(res));
+  }
 }

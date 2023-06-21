@@ -4,7 +4,7 @@ import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 import Preloader from "../Preloader/Preloader";
 import moviesApi from '../../utils/MoviesApi';
-import MainApi from '../../utils/MainApi.js';
+import More from "../More/More";
 import Footer from "../Footer/Footer";
 import MOVIES_URL from '../../utils/MoviesApi';
 
@@ -188,9 +188,10 @@ const Movies = ({ openPopup, isLoggedIn }) => {
       {preloader && <Preloader />}
       {errorText && <div className="movies__text-error">{errorText}</div>}
       {!preloader && !errorText && films !== null && filmsSaved !== null && filmsShowed !== null && (
-        <MoviesCardList handleMore={handleMore} filmsRemains={films}
+        <MoviesCardList  filmsRemains={films}
           films={filmsShowed} savedMoviesToggle={savedMoviesToggle} filmsSaved={filmsSaved} />
       )}
+      <More handleMore={handleMore}/>
       <Footer />
     </section>
   );

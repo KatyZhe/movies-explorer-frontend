@@ -39,24 +39,13 @@ class Auth {
       });
   }
 
-  updateUserInfo(data) {
-    return fetch(`${this._baseUrl}/users/me`, {
-      headers: { "Content-Type": "application/json" },
-      method: 'PATCH',
-      body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-      }),
-    }).then(this._checkResponse)
-    };
-
   //метод проверки валидности токена
   checkToken() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then(this._checkResponse)

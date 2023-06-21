@@ -6,6 +6,7 @@ import useForm from "../../hooks/useForm";
 
 const Profile = ({ onUpdateUser, onSignOut, isLoggedIn }) => {
   const currentUser = useContext(CurrentUserContext);
+  console.log(isLoggedIn);
   const { enteredValues, handleChange, isFormValid, resetForm } = useForm();
 
   const handleSubmit = (event) => {
@@ -21,7 +22,7 @@ const Profile = ({ onUpdateUser, onSignOut, isLoggedIn }) => {
     currentUser ? resetForm(currentUser) : resetForm();
   }, [currentUser, resetForm]);
 
-  const isNotChanged = (!isFormValid || (currentUser.name === enteredValues.name && currentUser.email === enteredValues.email));
+  const isNotChanged = (currentUser.name === enteredValues.name && currentUser.email === enteredValues.email);
 
   return (
     <section>

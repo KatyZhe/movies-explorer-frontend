@@ -160,25 +160,25 @@ const App = () => {
   /* ---- Обновить данные пользователя ----*/
 
   const handleUpdateUser = (newUserInfo) => {
-    const jwt = localStorage.setItem("jwt");
-    if (jwt) {
-      setIsLoggedIn(true);
-      setIsLoading(true);
-      auth
-        .updateUserInfo(newUserInfo, jwt)
-        .then((data) => {
-          setCurrentUser(data);
-          setPopupMessage("Профиль успешно редактирован!");
-          setIsPopupOpen(true);
-        })
-        .catch((error) => {
-          setPopupMessage("При обновлении профиля произошла ошибка.");
-          setIsPopupOpen(true);
-        })
-        .finally(() => {
-          setIsLoading(false);
+    console.log(newUserInfo);
+    mainApi
+      .updateUserInfo(newUserInfo)
+      .then(() => {
+        setCurrentUser({
+          ...currentUser,
+          name: newUserInfo.name,
+          email: newUserInfo.email,
         });
-    }
+        setPopupMessage("Профиль успешно редактирован!");
+        setIsPopupOpen(true);
+      })
+      .catch((error) => {
+        setPopupMessage("При обновлении профиля произошла ошибка.");
+        setIsPopupOpen(true);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   };
 
   useEffect(() => {
@@ -215,7 +215,7 @@ const App = () => {
               <ProtectedRoute
                 isLoading={isLoading}
                 component={Movies}
-                loggedIn={isLoggedIn}
+                isLoggedIn={isLoggedIn}
                 savedMovies={savedMovies}
                 onLoading={setIsLoading}
                 onSave={handleaddMovies}
@@ -232,7 +232,7 @@ const App = () => {
               <ProtectedRoute
                 component={SavedMovies}
                 isLoading={isLoading}
-                loggedIn={isLoggedIn}
+                isLoggedIn={isLoggedIn}
                 savedMovies={savedMovies}
                 onDelete={handleDeleteMovie}
                 setPopupMessage={setPopupMessage}
@@ -246,7 +246,7 @@ const App = () => {
             element={
               <ProtectedRoute
                 component={Profile}
-                loggedIn={isLoggedIn}
+                isLoggedIn={isLoggedIn}
                 onUpdateUser={handleUpdateUser}
                 onSignOut={handleSignOut}
               />

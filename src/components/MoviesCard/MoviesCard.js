@@ -1,21 +1,24 @@
-import './MoviesCard.css';
-import { useEffect, useState } from 'react';
-import { useResolvedPath } from 'react-router-dom';
+import "./MoviesCard.css";
+import { useEffect, useState } from "react";
+import { useResolvedPath } from "react-router-dom";
 
-const MoviesCard = ({ movie, savedMoviesToggle, filmsSaved }) => {
+const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
   const { pathname } = useResolvedPath();
   const [favorite, setFavorite] = useState(false);
 
   function handleFavoriteToogle() {
     const newFavorite = !favorite;
     const savedFilm = filmsSaved.filter((obj) => {
-      return obj.movieId === movie.id;
+      return obj.movieId === film.id;
     });
-    savedMoviesToggle({ ...movie, _id: savedFilm.length > 0 ? savedFilm[0]._id : null }, newFavorite);
+    savedMoviesToggle(
+      { ...film, _id: savedFilm.length > 0 ? savedFilm[0]._id : null },
+      newFavorite
+    );
   }
 
   function handleFavoriteDelete() {
-    savedMoviesToggle(movie, false);
+    savedMoviesToggle(film, false);
   }
 
   function getMovieDuration(mins) {
@@ -23,9 +26,9 @@ const MoviesCard = ({ movie, savedMoviesToggle, filmsSaved }) => {
   }
 
   useEffect(() => {
-    if (pathname !== '/saved-movies') {
+    if (pathname !== "/saved-movies") {
       const savedFilm = filmsSaved.filter((obj) => {
-        return obj.movieId === movie.id;
+        return obj.movieId === film.id;
       });
 
       if (savedFilm.length > 0) {
@@ -34,14 +37,14 @@ const MoviesCard = ({ movie, savedMoviesToggle, filmsSaved }) => {
         setFavorite(false);
       }
     }
-  }, [pathname, filmsSaved, movie.id]);
+  }, [pathname, filmsSaved, film.id]);
 
   return (
     <li className="card">
       <div className="card__element">
         <div className="card_description">
-          <p className="card__title">{movie.nameRU}</p>
-          <p className="card__duration">{getMovieDuration(movie.duration)}</p>
+          <p className="card__title">{film.nameRU}</p>
+          <p className="card__duration">{getMovieDuration(film.duration)}</p>
         </div>
         <div className="card__buttons">
           {pathname === "/saved-movies" ? (
@@ -56,21 +59,24 @@ const MoviesCard = ({ movie, savedMoviesToggle, filmsSaved }) => {
               className={`card__button card__button${
                 favorite ? "_active" : "_inactive"
               }`}
-              onClick={handleFavoriteToogle}
+              //onClick={handleFavoriteToogle}
             />
           )}
         </div>
       </div>
       <a
         className="card__link"
-        href={movie.trailerLink}
+        href={film.trailerLink}
         target="_blank"
         rel="noreferrer"
       >
         <img
-          src={pathname === '/saved-movies' ? `${movie.image}` :
-          `https://api.nomoreparties.co${movie.image.url}`}
-          alt={movie.nameRU}
+          src={
+            pathname === "/saved-movies"
+              ? `${film.image}`
+              : `https://api.nomoreparties.co${film.image.url}`
+          }
+          alt={film.nameRU}
           className="card__image"
         ></img>
       </a>
