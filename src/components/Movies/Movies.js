@@ -9,7 +9,7 @@ import Footer from "../Footer/Footer";
 import MOVIES_URL from '../../utils/MoviesApi';
 
 
-const Movies = ({ openPopup, loggedIn }) => {
+const Movies = ({ openPopup, isLoggedIn }) => {
   const [films, setFilms] = useState(null);
   const [filmsSaved, setFilmsSaved] = useState(null);
   const [preloader, setPreloader] = useState(false);
@@ -132,16 +132,16 @@ const Movies = ({ openPopup, loggedIn }) => {
         nameEN: film.nameEN,
       };
       try {
-        await MainApi.addMovies(objFilm);
-        const newSaved = await MainApi.getMovies();
+        await moviesApi.addMovies(objFilm);
+        const newSaved = await moviesApi.getMovies();
         setFilmsSaved(newSaved);
       } catch (err) {
         openPopup('Во время добавления фильма произошла ошибка.');
       }
     } else {
       try {
-        await MainApi.deleteMovies(film._id);
-        const newSaved = await MainApi.getMovies();
+        await moviesApi.deleteMovies(film._id);
+        const newSaved = await moviesApi.getMovies();
         setFilmsSaved(newSaved);
       } catch (err) {
         openPopup('Во время удаления фильма произошла ошибка.');
@@ -150,7 +150,7 @@ const Movies = ({ openPopup, loggedIn }) => {
   }
 
   useEffect(() => {
-    MainApi
+    moviesApi
       .getMovies()
       .then((data) => {
         setFilmsSaved(data);
@@ -183,7 +183,7 @@ const Movies = ({ openPopup, loggedIn }) => {
 
   return (
     <section>
-      <Header loggedIn={loggedIn} />
+      <Header isLoggedIn={true} />
       <SearchForm handleGetMovies={handleGetMovies} filmsTumbler={filmsTumbler} filmsInputSearch={filmsInputSearch} handleGetMoviesTumbler={handleGetMoviesTumbler}/>
       {preloader && <Preloader />}
       {errorText && <div className="movies__text-error">{errorText}</div>}

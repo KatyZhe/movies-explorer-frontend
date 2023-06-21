@@ -28,7 +28,7 @@ const App = () => {
   const location = useLocation();
 
   const mainApi = new MainApi({
-    baseUrl: "http://localhost:3001",
+    url: "http://localhost:3001",
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${localStorage.getItem("jwt")}`,
@@ -53,19 +53,6 @@ const App = () => {
         });
     }
   }, []);
-
-  useEffect(() => {
-    isLoggedIn &&
-      mainApi
-        .getUserInfo()
-        .then((userData) => {
-          console.log(userData);
-          setCurrentUser(userData);
-        })
-        .catch((err) => {
-          console.error(`Ошибка: ${err}`);
-        });
-  }, [isLoggedIn]);
 
   const handleRegistration = (enteredValues) => {
     auth
@@ -173,23 +160,39 @@ const App = () => {
   /* ---- Обновить данные пользователя ----*/
 
   const handleUpdateUser = (newUserInfo) => {
-    const jwt = localStorage.getItem("jwt");
-    setIsLoading(true);
-    mainApi
-      .updateUserInfo(newUserInfo, jwt)
-      .then((data) => {
-        setCurrentUser(data);
-        setPopupMessage("Профиль успешно редактирован!");
-        setIsPopupOpen(true);
-      })
-      .catch((error) => {
-        setPopupMessage("При обновлении профиля произошла ошибка.");
-        setIsPopupOpen(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
+    const jwt = localStorage.setItem("jwt");
+    if (jwt) {
+      setIsLoggedIn(true);
+      setIsLoading(true);
+      auth
+        .updateUserInfo(newUserInfo, jwt)
+        .then((data) => {
+          setCurrentUser(data);
+          setPopupMessage("Профиль успешно редактирован!");
+          setIsPopupOpen(true);
+        })
+        .catch((error) => {
+          setPopupMessage("При обновлении профиля произошла ошибка.");
+          setIsPopupOpen(true);
+        })
+        .finally(() => {
+          setIsLoading(false);
+        });
+    }
   };
+
+  useEffect(() => {
+    mainApi
+      .getUserInfo()
+      .then((userData) => {
+        console.log(userData);
+        setCurrentUser(userData);
+        setIsLoggedIn(true);
+      })
+      .catch((err) => {
+        console.error(`Ошибка: ${err}`);
+      });
+  }, []);
 
   return (
     <div className="App">
@@ -209,46 +212,44 @@ const App = () => {
             exact
             path="/movies"
             element={
-              <ProtectedRoute isLoading={isLoading}>
-                <Movies
-                  loggedIn={isLoggedIn}
-                  savedMovies={savedMovies}
-                  onLoading={setIsLoading}
-                  isLoading={isLoading}
-                  onSave={handleaddMovies}
-                  onDelete={handleDeleteMovie}
-                  setPopupMessage={setPopupMessage}
-                  setIsPopupOpen={setIsPopupOpen}
-                />
-              </ProtectedRoute>
+              <ProtectedRoute
+                isLoading={isLoading}
+                component={Movies}
+                loggedIn={isLoggedIn}
+                savedMovies={savedMovies}
+                onLoading={setIsLoading}
+                onSave={handleaddMovies}
+                onDelete={handleDeleteMovie}
+                setPopupMessage={setPopupMessage}
+                setIsPopupOpen={setIsPopupOpen}
+              />
             }
           />
           <Route
             exact
             path="/saved-movies"
             element={
-              <ProtectedRoute isLoading={isLoading}>
-                <SavedMovies
-                  loggedIn={isLoggedIn}
-                  savedMovies={savedMovies}
-                  onDelete={handleDeleteMovie}
-                  setPopupMessage={setPopupMessage}
-                  setIsPopupOpen={setIsPopupOpen}
-                />
-              </ProtectedRoute>
+              <ProtectedRoute
+                component={SavedMovies}
+                isLoading={isLoading}
+                loggedIn={isLoggedIn}
+                savedMovies={savedMovies}
+                onDelete={handleDeleteMovie}
+                setPopupMessage={setPopupMessage}
+                setIsPopupOpen={setIsPopupOpen}
+              />
             }
           />
           <Route
             exact
             path="/profile"
             element={
-              <ProtectedRoute>
-                <Profile
-                  loggedIn={isLoggedIn}
-                  onUpdateUser={handleUpdateUser}
-                  onSignOut={handleSignOut}
-                />
-              </ProtectedRoute>
+              <ProtectedRoute
+                component={Profile}
+                loggedIn={isLoggedIn}
+                onUpdateUser={handleUpdateUser}
+                onSignOut={handleSignOut}
+              />
             }
           />
           <Route

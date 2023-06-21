@@ -1,56 +1,31 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect } from "react";
 import "./Profile.css";
 import Header from "../Header/Header";
 import CurrentUserContext from "../../contexts/CurrentUserContext";
-import MainApi from "../../utils/MainApi";
+import useForm from "../../hooks/useForm";
 
-const Profile = ({ onSignOut, loggedIn, openPopup }) => {
+const Profile = ({ onUpdateUser, onSignOut, isLoggedIn }) => {
   const currentUser = useContext(CurrentUserContext);
-  const [name, setName] = useState(currentUser.name);
-  const [lastName, setLastName] = useState(currentUser.name);
-  const [email, setEmail] = useState(currentUser.email);
-  const [lastEmail, setLastEmail] = useState(currentUser.email);
-  const [isVisibleButton, setVisibleButton] = useState(false);
+  const { enteredValues, handleChange, isFormValid, resetForm } = useForm();
 
-  const handleSubmit = (evt) => {
-    evt.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
-    MainApi.updateUserInfo({ name, email }).then(() => {
-      setVisibleButton(false);
-      setLastName(name);
-      setLastEmail(email);
-      openPopup('Данные успешно изменены!');
-    })
-      .catch((err) => {
-        openPopup(`Что-то пошло не так! ${err}`);
-      });
+    onUpdateUser({
+      name: enteredValues.name,
+      email: enteredValues.email,
+    });
   };
 
-  function handleNameChange(evt) {
-    const value = evt.target.value;
-    setName(value);
+  useEffect(() => {
+    currentUser ? resetForm(currentUser) : resetForm();
+  }, [currentUser, resetForm]);
 
-    if (value !== lastName) {
-      setVisibleButton(true);
-    } else {
-      setVisibleButton(false);
-    }
-  }
-
-  function handleEmailChange(evt) {
-    const value = evt.target.value;
-    setEmail(value);
-
-    if (value !== lastEmail) {
-      setVisibleButton(true);
-    } else {
-      setVisibleButton(false);
-    }
-  }
+  const isNotChanged = (!isFormValid || (currentUser.name === enteredValues.name && currentUser.email === enteredValues.email));
 
   return (
     <section>
-      <Header loggedIn={loggedIn} />
+      <Header isLoggedIn={isLoggedIn} />
       <div className="profile__container">
         <h1 className="profile__title">Привет, {currentUser.name}!</h1>
         <form className="profile___form form" onSubmit={handleSubmit}>
@@ -59,8 +34,8 @@ const Profile = ({ onSignOut, loggedIn, openPopup }) => {
             <input
               type="text"
               name="name"
-              value={name || ""}
-              onChange={handleNameChange}
+              value={enteredValues.name || ""}
+              onChange={handleChange}
               className="profile__input"
               required
             />
@@ -71,8 +46,8 @@ const Profile = ({ onSignOut, loggedIn, openPopup }) => {
             <input
               type="email"
               name="email"
-              value={email || ""}
-              onChange={handleEmailChange}
+              value={enteredValues.email || ""}
+              onChange={handleChange}
               className="profile__input"
               required
             />
@@ -81,7 +56,7 @@ const Profile = ({ onSignOut, loggedIn, openPopup }) => {
             <button
               className="profile__edit"
               type="submit"
-              disabled={!isVisibleButton}
+              disabled={isNotChanged}
             >
               Редактировать
             </button>

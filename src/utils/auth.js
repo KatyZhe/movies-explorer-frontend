@@ -3,7 +3,7 @@ class Auth {
     this._baseUrl = baseUrl;
   }
 
-  _returnResponse(res) {
+  _checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
@@ -20,7 +20,7 @@ class Auth {
         email: `${email}`,
         password: `${password}`,
       }),
-    }).then(this._returnResponse);
+    }).then(this._checkResponse);
   }
 
   //метод для авторизации в системе
@@ -30,7 +30,7 @@ class Auth {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email: `${email}`, password: `${password}` }),
     })
-      .then(this._returnResponse)
+      .then(this._checkResponse)
       .then((data) => {
         if (data.token) {
           localStorage.setItem("token", data.token);
@@ -39,16 +39,27 @@ class Auth {
       });
   }
 
+  updateUserInfo(data) {
+    return fetch(`${this._baseUrl}/users/me`, {
+      headers: { "Content-Type": "application/json" },
+      method: 'PATCH',
+      body: JSON.stringify({
+        name: data.name,
+        email: data.email,
+      }),
+    }).then(this._checkResponse)
+    };
+
   //метод проверки валидности токена
   checkToken() {
     return fetch(`${this._baseUrl}/users/me`, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     })
-      .then(this._returnResponse)
+      .then(this._checkResponse)
       .then((data) => data);
   }
 }

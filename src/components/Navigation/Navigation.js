@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useResolvedPath } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import "./Navigation.css";
 import BurgerMenu from "../BurgerMenu/BurgerMenu";
 
@@ -10,7 +10,7 @@ const Navigation = ({ isLoggedIn }) => {
     setIsBurgerMenuOpen(!isBurgerMenuOpen);
   };
 
-  const routeMatch = useResolvedPath();
+  const location = useLocation();
 
   return (
     <nav className="navigation">
@@ -20,7 +20,7 @@ const Navigation = ({ isLoggedIn }) => {
             <Link
               to="/movies"
               className={
-                routeMatch.pathname === "/movies"
+                location.pathname === "/movies"
                   ? "navigation__movies-link_active"
                   : "navigation__movies-link"
               }
@@ -30,7 +30,7 @@ const Navigation = ({ isLoggedIn }) => {
             <Link
               to="/saved-movies"
               className={
-                routeMatch.pathname === "/saved-movies"
+                location.pathname === "/saved-movies"
                   ? "navigation__movies-link_active"
                   : "navigation__movies-link"
               }

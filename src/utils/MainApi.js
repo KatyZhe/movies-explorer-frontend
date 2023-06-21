@@ -4,7 +4,7 @@ export default class MainApi {
     this._headers = headers;
   }
 
-  _returnResponse(res) {
+  _checkResponse(res) {
     if (res.ok) {
       return res.json();
     }
@@ -12,27 +12,13 @@ export default class MainApi {
     return Promise.reject(`Ошибка: ${res.status}`);
   }
 
-  //универсальный метод запроса с проверкой ответа
   _request(url, options) {
-    return fetch(url, options).then(this._returnResponse);
+    return fetch(url, options).then(this._ckeckResponse);
   }
 
-  //GET с информацией пользователя с сервера
   getUserInfo() {
-    return this._request(`${this._url}/users/me`, {
-      headers: this._headers,
-    });
-  }
-
-  //редактирование профиля
-  updateUserInfo(data) {
-    return this._request(`${this._url}/users/me`, {
-      headers: this._headers,
-      method: 'PATCH',
-      body: JSON.stringify({
-        name: data.name,
-        email: data.email,
-      }),
-    });
+    return fetch(`${this._url}/users/me`, { headers: this._headers }).then(
+      (res) => this._checkResponse(res)
+    );
   }
 }

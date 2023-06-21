@@ -3,13 +3,13 @@ import './MoviesCardList.css';
 import MoviesCard from '../MoviesCard/MoviesCard';
 import Preloader from '../Preloader/Preloader';
 
-const MoviesCardList = ({ isLoading=false, isLiked, movies }) => {
+const MoviesCardList = ({ isLoading=false, isLiked, films }) => {
   return (
     <section className='cards'>
       {isLoading ? <Preloader /> : (
       <ul className='cards__list'>
-        {movies.map((movie) => {
-          return <MoviesCard key={movie.id} movie={movie} isLiked={isLiked} />
+        {films.map((film) => {
+          return <MoviesCard key={film.id} movie={film} isLiked={isLiked} />
         })}
       </ul>
       )}
