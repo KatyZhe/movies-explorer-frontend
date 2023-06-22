@@ -99,10 +99,10 @@ const App = () => {
 
   /* ---- Действия с фильмами ----*/
 
-  const handleaddMovies = (movie) => {
+  const handleaddMovies = (film) => {
     const jwt = localStorage.getItem("jwt");
     const handledMovie = savedMovies.find((item) => {
-      return item.movieId === movie.id;
+      return item.movieId === film.id;
     });
     const isLiked = Boolean(handledMovie);
     const id = handledMovie ? handledMovie._id : null;
@@ -125,7 +125,7 @@ const App = () => {
         });
     } else {
       mainApi
-        .addMovies(movie, jwt)
+        .addMovies(film, jwt)
         .then((newSavedMovie) => {
           setSavedMovies((prev) => [...prev, newSavedMovie]);
         })
@@ -136,11 +136,11 @@ const App = () => {
     }
   };
 
-  const handleDeleteMovie = (movie) => {
+  const handleDeleteMovie = (film) => {
     setIsLoading(true);
     const jwt = localStorage.getItem("jwt");
     mainApi
-      .deleteMovies(movie._id, jwt)
+      .deleteMovies(film._id, jwt)
       .then((card) => {
         const updatedSavedMovies = savedMovies.filter(
           (item) => card._id !== item._id

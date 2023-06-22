@@ -1,20 +1,17 @@
 import "./MoviesCard.css";
 import { useEffect, useState } from "react";
-import { useResolvedPath } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 
 const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
-  const { pathname } = useResolvedPath();
+  const { pathname } = useLocation();
   const [favorite, setFavorite] = useState(false);
 
   function handleFavoriteToogle() {
     const newFavorite = !favorite;
     const savedFilm = filmsSaved.filter((obj) => {
-      return obj.movieId === film.id;
+      return obj.movieId == film.id;
     });
-    savedMoviesToggle(
-      { ...film, _id: savedFilm.length > 0 ? savedFilm[0]._id : null },
-      newFavorite
-    );
+    savedMoviesToggle({ ...film, _id: savedFilm.length > 0 ? savedFilm[0]._id : null }, newFavorite);
   }
 
   function handleFavoriteDelete() {
@@ -26,9 +23,9 @@ const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
   }
 
   useEffect(() => {
-    if (pathname !== "/saved-movies") {
+    if (pathname !== '/saved-movies') {
       const savedFilm = filmsSaved.filter((obj) => {
-        return obj.movieId === film.id;
+        return obj.movieId == film.id;
       });
 
       if (savedFilm.length > 0) {
@@ -38,6 +35,7 @@ const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
       }
     }
   }, [pathname, filmsSaved, film.id]);
+
 
   return (
     <li className="card">
@@ -59,7 +57,7 @@ const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
               className={`card__button card__button${
                 favorite ? "_active" : "_inactive"
               }`}
-              //onClick={handleFavoriteToogle}
+              onClick={handleFavoriteToogle}
             />
           )}
         </div>
