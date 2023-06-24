@@ -18,21 +18,6 @@ class MoviesApi {
       headers: this._headers,
     }).then(this._checkResponse);
   };
-
-  addMovies(data) {
-    return fetch(`${this._url}/movies`, {
-      method: 'POST',
-      headers: this._headers,
-      body: JSON.stringify(data),
-    }).then(this._handleRes);
-  };
-  
-  deleteMovies(movieId) {
-    return fetch(`${this._url}/movies/${movieId}`, {
-      method: 'DELETE',
-      headers: this._headers,
-    }).then(this._handleRes);
-  };
 }
 
 const moviesApi = new MoviesApi({

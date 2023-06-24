@@ -15,6 +15,8 @@ const Login = ({ onLogin }) => {
     onLogin(enteredValues);
   };
 
+  const isEmpty = (enteredValues) => !enteredValues.trim().length;
+
   return (
     <section className='login__container'>
       <div className='login__header'>
@@ -52,13 +54,13 @@ const Login = ({ onLogin }) => {
           onChange={handleChange}
         />
         <span className='register__error'>{errors.password}</span>
-        <button className='login__button' type='submit' disabled={!isFormValid}>
+        <button className='login__button' type='submit' disabled={!isFormValid || isEmpty}>
           Войти
         </button>
       </form>
       <div className='login__bottom'>
         <span>Ещё не зарегистрированы?</span>
-        <Link to='signup' className='login__link'>
+        <Link to='/signup' className='login__link'>
           Регистрация
         </Link>
       </div>

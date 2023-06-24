@@ -1,22 +1,31 @@
-import React, { useState, useEffect } from 'react';
-import Header from '../Header/Header';
-import MoviesCardList from '../MoviesCardList/MoviesCardList';
-import SearchForm from '../SearchForm/SearchForm';
-import More from '../More/More';
-import Footer from '../Footer/Footer';
-import Preloader from '../Preloader/Preloader';
-import moviesApi from '../../utils/MoviesApi';
+import React, { useState, useEffect } from "react";
+import Header from "../Header/Header";
+import MoviesCardList from "../MoviesCardList/MoviesCardList";
+import SearchForm from "../SearchForm/SearchForm";
+import More from "../More/More";
+import Footer from "../Footer/Footer";
+import Preloader from "../Preloader/Preloader";
+import MainApi from "../../utils/MainApi";
+import moviesApi from "../../utils/MoviesApi";
 
 const SavedMovies = ({ isLoggedIn }) => {
-
   const [films, setFilms] = useState(null);
   const [preloader, setPreloader] = useState(false);
-  const [errorText, setErrorText] = useState('');
+  const [errorText, setErrorText] = useState("");
+  const [MoviesCount, setMoviesCount] = useState([]);
   const [filmsTumbler, setFilmsTumbler] = useState(false);
-  const [filmsInputSearch, setFilmsInputSearch] = useState('');
+  const [filmsInputSearch, setFilmsInputSearch] = useState("");
   const [filmsShowed, setFilmsShowed] = useState([]);
   const [filmsShowedWithTumbler, setFilmsShowedWithTumbler] = useState([]);
   const [filmsWithTumbler, setFilmsWithTumbler] = useState([]);
+
+  const mainApi = new MainApi({
+    url: "http://localhost:3001",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
 
   async function handleGetMoviesTumbler(tumbler) {
     let filterDataShowed = [];
@@ -35,20 +44,21 @@ const SavedMovies = ({ isLoggedIn }) => {
     setFilms(filterData);
   }
 
-
   async function handleGetMovies(inputSearch, tumbler) {
-    setErrorText('');
+    setErrorText("");
     setPreloader(true);
     try {
       const data = films;
-      let filterData = data.filter(({ nameRU }) => nameRU.toLowerCase().includes(inputSearch.toLowerCase()));
+      let filterData = data.filter(({ nameRU }) =>
+        nameRU.toLowerCase().includes(inputSearch.toLowerCase())
+      );
 
-      if (tumbler) filterData = filterData.filter(({ duration }) => duration <= 40);
+      if (tumbler)
+        filterData = filterData.filter(({ duration }) => duration <= 40);
       setFilmsShowed(filterData);
     } catch (err) {
-      setErrorText('Фильм невозможно созранить в избранном');
+      setErrorText("Фильм невозможно созранить в избранном");
       setFilms([]);
-
     } finally {
       setPreloader(false);
     }
@@ -57,50 +67,98 @@ const SavedMovies = ({ isLoggedIn }) => {
   async function savedMoviesToggle(film, favorite) {
     if (!favorite) {
       try {
-        await moviesApi.deleteMovies(film._id);
-        const newFilms = await moviesApi.getMovies();
+        await mainApi.deleteMovies(film._id);
+        const newFilms = await mainApi.getFavorite();
         setFilmsShowed(newFilms);
         setFilms(newFilms);
       } catch (err) {
-        setErrorText('Невозможно удалить фильм из избранного');
+        setErrorText("Невозможно удалить фильм из избранного");
       }
     }
   }
 
   useEffect(() => {
-    const localStorageFilms = localStorage.getItem('savedFilms');
+    const localStorageFilms = localStorage.getItem("savedFilms");
     if (localStorageFilms) {
       setFilms(JSON.parse(localStorageFilms));
-      const localStorageFilmsTumbler = localStorage.getItem('savedFilmsTumbler');
-
+      const localStorageFilmsTumbler =
+        localStorage.getItem("savedFilmsTumbler");
 
       if (localStorageFilmsTumbler) {
-        setFilmsTumbler(localStorageFilmsTumbler === 'true');
+        setFilmsTumbler(localStorageFilmsTumbler === "true");
       }
-
-
     } else {
       try {
-        const data = moviesApi.getMovies();
-        setFilms(data);
-        setFilmsShowed(data);
+        mainApi.getFavorite().then((data) => {
+          setFilms(data);
+          const spliceData = data.slice(0, MoviesCount[0]);
+          setFilmsShowed(spliceData);
+        });
       } catch (err) {
-        setErrorText('Сервер не отвечает. Попробуйте позднее');
+        setErrorText("Сервер не отвечает. Попробуйте позднее");
       }
     }
   }, []);
 
+  useEffect(() => {
+    setMoviesCount(getMoviesCount());
+    const handlerResize = () => setMoviesCount(getMoviesCount());
+    window.addEventListener("resize", handlerResize);
+
+    return () => {
+      window.removeEventListener("resize", handlerResize);
+    };
+  }, []);
+
+  function getMoviesCount() {
+    let countCards;
+    const clientWidth = document.documentElement.clientWidth;
+    const MoviesCountConfig = {
+      1200: [12, 3],
+      900: [9, 3],
+      768: [8, 2],
+      320: [5, 5],
+    };
+
+    Object.keys(MoviesCountConfig)
+      .sort((a, b) => a - b)
+      .forEach((key) => {
+        if (clientWidth > +key) {
+          countCards = MoviesCountConfig[key];
+        }
+      });
+
+    return countCards;
+  }
+
+  function handleMore() {
+    const spliceFilms = films;
+    const newFilmsShowed = filmsShowed.concat(
+      spliceFilms.slice(filmsShowed.length, MoviesCount[1] + filmsShowed.length)
+    );
+    setFilmsShowed(newFilmsShowed);
+  }
+
   return (
     <section>
       <Header isLoggedIn={isLoggedIn} />
-      <SearchForm handleGetMovies={handleGetMovies} filmsTumbler={filmsTumbler} filmsInputSearch={filmsInputSearch} handleGetMoviesTumbler={handleGetMoviesTumbler}/>
+      <SearchForm
+        handleGetMovies={handleGetMovies}
+        filmsTumbler={filmsTumbler}
+        filmsInputSearch={filmsInputSearch}
+        handleGetMoviesTumbler={handleGetMoviesTumbler}
+      />
       {preloader && <Preloader />}
       {errorText && <div className="saved-movies__text-error">{errorText}</div>}
-      <MoviesCardList filmsRemains={[]} savedMoviesToggle={savedMoviesToggle} films={filmsShowed} />
-      <More />
+      <MoviesCardList
+        filmsRemains={[]}
+        savedMoviesToggle={savedMoviesToggle}
+        films={filmsShowed}
+      />
+      <More onClick={handleMore}/>
       <Footer />
     </section>
-  )
+  );
 };
 
 export default SavedMovies;

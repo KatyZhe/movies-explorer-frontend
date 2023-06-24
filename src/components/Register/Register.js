@@ -6,7 +6,7 @@ import useForm from "../../hooks/useForm";
 import isEmail from 'validator/es/lib/isEmail';
 
 const Register = ({ onRegister, isLoggedIn }) => {
-  const { enteredValues, handleChange, errors } = useForm();
+  const { enteredValues, handleChange, errors, isFormValid } = useForm();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -19,6 +19,8 @@ const Register = ({ onRegister, isLoggedIn }) => {
     event.preventDefault();
     onRegister(enteredValues);
   };
+
+  const isEmpty = (enteredValues) => !enteredValues.trim().length;
 
   return (
     <section className="register__container">
@@ -75,7 +77,7 @@ const Register = ({ onRegister, isLoggedIn }) => {
         <button
           className="register__button"
           type="submit"
-          disabled={!isEmail ? true : ''}
+          disabled={!isFormValid || isEmpty}
         >
           Зарегистрироваться
         </button>

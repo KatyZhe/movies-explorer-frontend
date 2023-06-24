@@ -39,9 +39,7 @@ const App = () => {
 
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
-    console.log(jwt);
     if (jwt) {
-      console.log(jwt);
       auth
         .checkToken(jwt)
         .then((res) => {
@@ -73,14 +71,12 @@ const App = () => {
       .authorize(enteredValues.email, enteredValues.password)
       .then((res) => {
         if (res) {
-          console.log(res);
           setIsLoggedIn(true);
           localStorage.setItem("jwt", res.token);
           navigate("/movies", { replace: true });
         }
       })
       .catch((error) => {
-        console.log(error);
         setPopupMessage(error);
         setIsPopupOpen(true);
       });
@@ -97,70 +93,9 @@ const App = () => {
     setPopupMessage("");
   };
 
-  /* ---- Действия с фильмами ----*/
-
-  // const handleaddMovies = (film) => {
-  //   const jwt = localStorage.getItem("jwt");
-  //   const handledMovie = savedMovies.find((item) => {
-  //     return item.movieId === film.id;
-  //   });
-  //   const isLiked = Boolean(handledMovie);
-  //   const id = handledMovie ? handledMovie._id : null;
-  //   if (isLiked) {
-  //     mainApi
-  //       .deleteMovies(id, jwt)
-  //       .then((card) => {
-  //         const updatedSavedMovies = savedMovies.filter(
-  //           (item) => card._id !== item._id
-  //         );
-  //         localStorage.setItem("savedMovies", updatedSavedMovies);
-  //         setSavedMovies(updatedSavedMovies);
-  //       })
-  //       .catch((error) => {
-  //         setPopupMessage(error);
-  //         setIsPopupOpen(true);
-  //       })
-  //       .finally(() => {
-  //         setIsLoading(false);
-  //       });
-  //   } else {
-  //     mainApi
-  //       .addMovies(film, jwt)
-  //       .then((newSavedMovie) => {
-  //         setSavedMovies((prev) => [...prev, newSavedMovie]);
-  //       })
-  //       .catch((error) => {
-  //         setPopupMessage(error);
-  //         setIsPopupOpen(true);
-  //       });
-  //   }
-  // };
-
-  // const handleDeleteMovie = (film) => {
-  //   setIsLoading(true);
-  //   const jwt = localStorage.getItem("jwt");
-  //   mainApi
-  //     .deleteMovies(film._id, jwt)
-  //     .then((card) => {
-  //       const updatedSavedMovies = savedMovies.filter(
-  //         (item) => card._id !== item._id
-  //       );
-  //       localStorage.setItem("savedMovies", updatedSavedMovies);
-  //       setSavedMovies((prev) => updatedSavedMovies);
-  //     })
-  //     .catch((error) => {
-  //       setPopupMessage(error);
-  //       setIsPopupOpen(true);
-  //     })
-  //     .finally(() => {
-  //       setIsLoading(false);
-  //     });
-  // };
-
   /* ---- Обновить данные пользователя ----*/
 
   const handleUpdateUser = (newUserInfo) => {
-    console.log(newUserInfo);
     mainApi
       .updateUserInfo(newUserInfo)
       .then(() => {
@@ -185,7 +120,6 @@ const App = () => {
     mainApi
       .getUserInfo()
       .then((userData) => {
-        console.log(userData);
         setCurrentUser(userData);
         setIsLoggedIn(true);
       })

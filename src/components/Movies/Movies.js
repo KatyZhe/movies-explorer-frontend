@@ -3,10 +3,9 @@ import Header from "../Header/Header";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 import Preloader from "../Preloader/Preloader";
-import moviesApi from '../../utils/MoviesApi';
+import moviesApi from "../../utils/MoviesApi";
+import MainApi from "../../utils/MainApi";
 import Footer from "../Footer/Footer";
-import MOVIES_URL from '../../utils/MoviesApi';
-
 
 const Movies = ({ openPopup }) => {
   const [films, setFilms] = useState(null);
@@ -20,7 +19,13 @@ const Movies = ({ openPopup }) => {
   const [filmsWithTumbler, setFilmsWithTumbler] = useState([]);
   const [filmsShowedWithTumbler, setFilmsShowedWithTumbler] = useState([]);
 
-  
+  const mainApi = new MainApi({
+    url: "http://localhost:3001",
+    headers: {
+      "Content-Type": "application/json",
+      authorization: `Bearer ${localStorage.getItem("jwt")}`,
+    },
+  });
 
   useEffect(() => {
     setMoviesCount(getMoviesCount());
@@ -58,10 +63,12 @@ const Movies = ({ openPopup }) => {
   function handleMore() {
     const spliceFilms = films;
     const newFilmsShowed = filmsShowed.concat(
-      spliceFilms.splice(0, MoviesCount[1])
+      spliceFilms.slice(
+        filmsShowed.length,
+        MoviesCount[1] + filmsShowed.length
+      )
     );
     setFilmsShowed(newFilmsShowed);
-    setFilms(spliceFilms);
   }
 
   /* Поиск фильмов */
@@ -71,7 +78,7 @@ const Movies = ({ openPopup }) => {
     localStorage.setItem("filmsTumbler", false);
 
     if (!inputSearch) {
-      setErrorText('Нужно ввести ключевое слово');
+      setErrorText("Нужно ввести ключевое слово");
       return false;
     }
 
@@ -92,7 +99,9 @@ const Movies = ({ openPopup }) => {
       setFilmsShowedWithTumbler(spliceData);
       setFilmsWithTumbler(filterData);
     } catch (err) {
-      setErrorText('Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз');
+      setErrorText(
+        "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"
+      );
 
       setFilms([]);
       localStorage.removeItem("films");
@@ -123,14 +132,14 @@ const Movies = ({ openPopup }) => {
     setFilms(filterData);
   }
 
-  /* Добавление в сохраненные фильмы */ 
+  /* Добавление в сохраненные фильмы */
 
   async function savedMoviesToggle(film, favorite) {
     if (favorite) {
       const objFilm = {
-        image: MOVIES_URL + film.image.url,
+        image: "https://api.nomoreparties.co" + film.image.url,
         trailerLink: film.trailerLink,
-        thumbnail: MOVIES_URL + film.image.url,
+        thumbnail: "https://api.nomoreparties.co" + film.image.url,
         movieId: film.id,
         country: film.country || "Неизвестно",
         director: film.director,
@@ -141,19 +150,19 @@ const Movies = ({ openPopup }) => {
         nameEN: film.nameEN,
       };
       try {
-        await moviesApi.addMovies(objFilm);
-        const newSaved = await moviesApi.getMovies();
+        await mainApi.addMovies(objFilm);
+        const newSaved = await mainApi.getFavorite();
         setFilmsSaved(newSaved);
       } catch (err) {
-        openPopup('Во время добавления фильма произошла ошибка.');
+        console.log(err);
       }
     } else {
       try {
-        await moviesApi.deleteMovies(film._id);
-        const newSaved = await moviesApi.getMovies();
+        await mainApi.deleteMovies(film._id);
+        const newSaved = await mainApi.getFavorite();
         setFilmsSaved(newSaved);
       } catch (err) {
-        openPopup('Во время удаления фильма произошла ошибка.');
+        console.log("Во время удаления фильма произошла ошибка.");
       }
     }
   }
@@ -161,14 +170,18 @@ const Movies = ({ openPopup }) => {
   useEffect(() => {
     moviesApi
       .getMovies()
-      .then((data) => {
-        setFilmsSaved(data);
+      .then((films) => {
+        setFilms(films);
       })
       .catch((err) => {
         openPopup(`Ошибка сервера ${err}`);
       });
 
     const localStorageFilms = localStorage.getItem("films");
+
+    mainApi.getFavorite().then((savedFilms) => {
+      setFilmsSaved(savedFilms);
+    });
 
     if (localStorageFilms) {
       const filterData = JSON.parse(localStorageFilms);
@@ -193,13 +206,27 @@ const Movies = ({ openPopup }) => {
   return (
     <section>
       <Header isLoggedIn={true} />
-      <SearchForm handleGetMovies={handleGetMovies} filmsTumbler={filmsTumbler} filmsInputSearch={filmsInputSearch} handleGetMoviesTumbler={handleGetMoviesTumbler}/>
+      <SearchForm
+        handleGetMovies={handleGetMovies}
+        filmsTumbler={filmsTumbler}
+        filmsInputSearch={filmsInputSearch}
+        handleGetMoviesTumbler={handleGetMoviesTumbler}
+      />
       {preloader && <Preloader />}
       {errorText && <div className="movies__text-error">{errorText}</div>}
-      {!preloader && !errorText && films !== null && filmsSaved !== null && filmsShowed !== null && (
-        <MoviesCardList  filmsRemains={films} handleMore={handleMore}
-          films={filmsShowed} savedMoviesToggle={savedMoviesToggle} filmsSaved={filmsSaved} />
-      )}
+      {!preloader &&
+        !errorText &&
+        films !== null &&
+        filmsSaved !== null &&
+        filmsShowed !== null && (
+          <MoviesCardList
+            filmsRemains={films}
+            handleMore={handleMore}
+            films={filmsShowed}
+            savedMoviesToggle={savedMoviesToggle}
+            filmsSaved={filmsSaved}
+          />
+        )}
       <Footer />
     </section>
   );
