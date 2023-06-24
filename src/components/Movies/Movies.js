@@ -4,12 +4,11 @@ import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
 import Preloader from "../Preloader/Preloader";
 import moviesApi from '../../utils/MoviesApi';
-import More from "../More/More";
 import Footer from "../Footer/Footer";
 import MOVIES_URL from '../../utils/MoviesApi';
 
 
-const Movies = ({ openPopup, isLoggedIn }) => {
+const Movies = ({ openPopup }) => {
   const [films, setFilms] = useState(null);
   const [filmsSaved, setFilmsSaved] = useState(null);
   const [preloader, setPreloader] = useState(false);
@@ -21,6 +20,8 @@ const Movies = ({ openPopup, isLoggedIn }) => {
   const [filmsWithTumbler, setFilmsWithTumbler] = useState([]);
   const [filmsShowedWithTumbler, setFilmsShowedWithTumbler] = useState([]);
 
+  
+
   useEffect(() => {
     setMoviesCount(getMoviesCount());
     const handlerResize = () => setMoviesCount(getMoviesCount());
@@ -31,6 +32,8 @@ const Movies = ({ openPopup, isLoggedIn }) => {
     };
   }, []);
 
+  /* Вывод карточек по нажатию кнопки Еще */
+
   function getMoviesCount() {
     let countCards;
     const clientWidth = document.documentElement.clientWidth;
@@ -38,7 +41,7 @@ const Movies = ({ openPopup, isLoggedIn }) => {
       1200: [12, 3],
       900: [9, 3],
       768: [8, 2],
-      240: [5, 2],
+      320: [5, 5],
     };
 
     Object.keys(MoviesCountConfig)
@@ -60,6 +63,8 @@ const Movies = ({ openPopup, isLoggedIn }) => {
     setFilmsShowed(newFilmsShowed);
     setFilms(spliceFilms);
   }
+
+  /* Поиск фильмов */
 
   async function handleGetMovies(inputSearch) {
     setFilmsTumbler(false);
@@ -98,6 +103,8 @@ const Movies = ({ openPopup, isLoggedIn }) => {
     }
   }
 
+  /* Короткометражки */
+
   async function handleGetMoviesTumbler(tumbler) {
     let filterDataShowed = [];
     let filterData = [];
@@ -115,6 +122,8 @@ const Movies = ({ openPopup, isLoggedIn }) => {
     setFilmsShowed(filterDataShowed);
     setFilms(filterData);
   }
+
+  /* Добавление в сохраненные фильмы */ 
 
   async function savedMoviesToggle(film, favorite) {
     if (favorite) {
@@ -188,10 +197,9 @@ const Movies = ({ openPopup, isLoggedIn }) => {
       {preloader && <Preloader />}
       {errorText && <div className="movies__text-error">{errorText}</div>}
       {!preloader && !errorText && films !== null && filmsSaved !== null && filmsShowed !== null && (
-        <MoviesCardList  filmsRemains={films}
+        <MoviesCardList  filmsRemains={films} handleMore={handleMore}
           films={filmsShowed} savedMoviesToggle={savedMoviesToggle} filmsSaved={filmsSaved} />
       )}
-      <More handleMore={handleMore}/>
       <Footer />
     </section>
   );

@@ -57,7 +57,7 @@ const Profile = ({ onUpdateUser, onSignOut, isLoggedIn }) => {
             <button
               className="profile__edit"
               type="submit"
-              disabled={isNotChanged}
+              disabled={isNotChanged || !isFormValid}
             >
               Редактировать
             </button>

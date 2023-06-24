@@ -99,63 +99,63 @@ const App = () => {
 
   /* ---- Действия с фильмами ----*/
 
-  const handleaddMovies = (film) => {
-    const jwt = localStorage.getItem("jwt");
-    const handledMovie = savedMovies.find((item) => {
-      return item.movieId === film.id;
-    });
-    const isLiked = Boolean(handledMovie);
-    const id = handledMovie ? handledMovie._id : null;
-    if (isLiked) {
-      mainApi
-        .deleteMovies(id, jwt)
-        .then((card) => {
-          const updatedSavedMovies = savedMovies.filter(
-            (item) => card._id !== item._id
-          );
-          localStorage.setItem("savedMovies", updatedSavedMovies);
-          setSavedMovies(updatedSavedMovies);
-        })
-        .catch((error) => {
-          setPopupMessage(error);
-          setIsPopupOpen(true);
-        })
-        .finally(() => {
-          setIsLoading(false);
-        });
-    } else {
-      mainApi
-        .addMovies(film, jwt)
-        .then((newSavedMovie) => {
-          setSavedMovies((prev) => [...prev, newSavedMovie]);
-        })
-        .catch((error) => {
-          setPopupMessage(error);
-          setIsPopupOpen(true);
-        });
-    }
-  };
+  // const handleaddMovies = (film) => {
+  //   const jwt = localStorage.getItem("jwt");
+  //   const handledMovie = savedMovies.find((item) => {
+  //     return item.movieId === film.id;
+  //   });
+  //   const isLiked = Boolean(handledMovie);
+  //   const id = handledMovie ? handledMovie._id : null;
+  //   if (isLiked) {
+  //     mainApi
+  //       .deleteMovies(id, jwt)
+  //       .then((card) => {
+  //         const updatedSavedMovies = savedMovies.filter(
+  //           (item) => card._id !== item._id
+  //         );
+  //         localStorage.setItem("savedMovies", updatedSavedMovies);
+  //         setSavedMovies(updatedSavedMovies);
+  //       })
+  //       .catch((error) => {
+  //         setPopupMessage(error);
+  //         setIsPopupOpen(true);
+  //       })
+  //       .finally(() => {
+  //         setIsLoading(false);
+  //       });
+  //   } else {
+  //     mainApi
+  //       .addMovies(film, jwt)
+  //       .then((newSavedMovie) => {
+  //         setSavedMovies((prev) => [...prev, newSavedMovie]);
+  //       })
+  //       .catch((error) => {
+  //         setPopupMessage(error);
+  //         setIsPopupOpen(true);
+  //       });
+  //   }
+  // };
 
-  const handleDeleteMovie = (film) => {
-    setIsLoading(true);
-    const jwt = localStorage.getItem("jwt");
-    mainApi
-      .deleteMovies(film._id, jwt)
-      .then((card) => {
-        const updatedSavedMovies = savedMovies.filter(
-          (item) => card._id !== item._id
-        );
-        localStorage.setItem("savedMovies", updatedSavedMovies);
-        setSavedMovies((prev) => updatedSavedMovies);
-      })
-      .catch((error) => {
-        setPopupMessage(error);
-        setIsPopupOpen(true);
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  };
+  // const handleDeleteMovie = (film) => {
+  //   setIsLoading(true);
+  //   const jwt = localStorage.getItem("jwt");
+  //   mainApi
+  //     .deleteMovies(film._id, jwt)
+  //     .then((card) => {
+  //       const updatedSavedMovies = savedMovies.filter(
+  //         (item) => card._id !== item._id
+  //       );
+  //       localStorage.setItem("savedMovies", updatedSavedMovies);
+  //       setSavedMovies((prev) => updatedSavedMovies);
+  //     })
+  //     .catch((error) => {
+  //       setPopupMessage(error);
+  //       setIsPopupOpen(true);
+  //     })
+  //     .finally(() => {
+  //       setIsLoading(false);
+  //     });
+  // };
 
   /* ---- Обновить данные пользователя ----*/
 
@@ -218,8 +218,7 @@ const App = () => {
                 isLoggedIn={isLoggedIn}
                 savedMovies={savedMovies}
                 onLoading={setIsLoading}
-                onSave={handleaddMovies}
-                onDelete={handleDeleteMovie}
+                //savedMoviesToggle={savedMoviesToggle}
                 setPopupMessage={setPopupMessage}
                 setIsPopupOpen={setIsPopupOpen}
               />
@@ -234,7 +233,7 @@ const App = () => {
                 isLoading={isLoading}
                 isLoggedIn={isLoggedIn}
                 savedMovies={savedMovies}
-                onDelete={handleDeleteMovie}
+                //onDelete={handleDeleteMovie}
                 setPopupMessage={setPopupMessage}
                 setIsPopupOpen={setIsPopupOpen}
               />

@@ -2,11 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './Login.css';
 import logo from '../../images/header-logo.svg';
-import isEmail from 'validator/es/lib/isEmail';
 import useForm from "../../hooks/useForm";
 
 const Login = ({ onLogin }) => {
-  const { enteredValues, handleChange, errors } = useForm();
+  const { enteredValues, handleChange, errors, isFormValid } = useForm();
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -53,7 +52,7 @@ const Login = ({ onLogin }) => {
           onChange={handleChange}
         />
         <span className='register__error'>{errors.password}</span>
-        <button className='login__button' type='submit' disabled={!isEmail}>
+        <button className='login__button' type='submit' disabled={!isFormValid}>
           Войти
         </button>
       </form>

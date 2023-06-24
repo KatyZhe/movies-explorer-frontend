@@ -25,7 +25,7 @@ const MoviesCardList = ({ films, savedMoviesToggle, filmsSaved, filmsRemains, ha
       )}
 
       {filmsRemains.length > 0 && pathname !== '/saved-movies' && (
-        <More onClick={handleMore}/>
+        <More handleMore={handleMore}/>
       )}
     </section>
   );
