@@ -6,7 +6,6 @@ import More from "../More/More";
 import Footer from "../Footer/Footer";
 import Preloader from "../Preloader/Preloader";
 import MainApi from "../../utils/MainApi";
-import moviesApi from "../../utils/MoviesApi";
 
 const SavedMovies = ({ isLoggedIn }) => {
   const [films, setFilms] = useState(null);
@@ -20,7 +19,7 @@ const SavedMovies = ({ isLoggedIn }) => {
   const [filmsWithTumbler, setFilmsWithTumbler] = useState([]);
 
   const mainApi = new MainApi({
-    url: "http://localhost:3001",
+    url: "https://api.katyzhe.nomoredomains.rocks",
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${localStorage.getItem("jwt")}`,

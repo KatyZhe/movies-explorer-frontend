@@ -20,7 +20,7 @@ const Movies = ({ openPopup }) => {
   const [filmsShowedWithTumbler, setFilmsShowedWithTumbler] = useState([]);
 
   const mainApi = new MainApi({
-    url: "http://localhost:3001",
+    url: "https://api.katyzhe.nomoredomains.rocks",
     headers: {
       "Content-Type": "application/json",
       authorization: `Bearer ${localStorage.getItem("jwt")}`,
