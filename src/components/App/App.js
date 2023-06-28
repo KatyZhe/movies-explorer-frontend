@@ -40,6 +40,7 @@ const App = () => {
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
+      console.log(jwt);
       auth
         .checkToken(jwt)
         .then((res) => {
@@ -50,6 +51,7 @@ const App = () => {
           console.log(`${err}`);
         });
     }
+
   }, []);
 
   const handleRegistration = (enteredValues) => {
@@ -60,7 +62,7 @@ const App = () => {
           handleAuthorization(enteredValues);
         }
       })
-      .catch((error) => {
+      .catch((error) => { //раз открывается popup значит есть какая-то ошибка
         setPopupMessage(error);
         setIsPopupOpen(true);
       });
@@ -76,7 +78,7 @@ const App = () => {
           navigate("/movies", { replace: true });
         }
       })
-      .catch((error) => {
+      .catch((error) => { //раз открывается popup значит есть какая-то ошибка
         setPopupMessage(error);
         setIsPopupOpen(true);
       });
@@ -117,7 +119,9 @@ const App = () => {
   };
 
   useEffect(() => {
-    mainApi
+    const jwt = localStorage.getItem('jwt');
+    if(jwt && isLoggedIn) {
+      mainApi
       .getUserInfo()
       .then((userData) => {
         setCurrentUser(userData);
@@ -126,7 +130,8 @@ const App = () => {
       .catch((err) => {
         console.error(`Ошибка: ${err}`);
       });
-  }, []);
+    }
+  }, [isLoggedIn]);
 
   return (
     <div className="App">
