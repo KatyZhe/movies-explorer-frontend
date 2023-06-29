@@ -40,7 +40,6 @@ const App = () => {
   useEffect(() => {
     const jwt = localStorage.getItem("jwt");
     if (jwt) {
-      console.log(jwt);
       auth
         .checkToken(jwt)
         .then((res) => {
@@ -86,7 +85,7 @@ const App = () => {
 
   const handleSignOut = () => {
     setIsLoggedIn(false);
-    localStorage.removeItem("token");
+    localStorage.clear();
     navigate("/signin", { replace: true });
   };
 
@@ -207,7 +206,7 @@ const App = () => {
               <Login onLogin={handleAuthorization} isLoggedIn={isLoggedIn} />
             }
           />
-          <Route path="*" element={<NotFound />} />
+          <Route path="*" element={<NotFound isLoggedIn={isLoggedIn} />} />
         </Routes>
         <Popup
           isOpen={isPopupOpen}

@@ -6,6 +6,7 @@ import More from '../More/More';
 
 const MoviesCardList = ({ films, savedMoviesToggle, filmsSaved, filmsRemains, handleMore }) => {
   const { pathname } = useLocation();
+  console.log(filmsRemains);
 
   return (
     <section className="cards">
@@ -24,7 +25,7 @@ const MoviesCardList = ({ films, savedMoviesToggle, filmsSaved, filmsRemains, ha
         <div className="cards__text">Ничего не найдено</div>
       )}
 
-      {filmsRemains.length > 0 && pathname !== '/saved-movies' && (
+      {filmsRemains > 0 && pathname !== '/saved-movies' && (
         <More handleMore={handleMore}/>
       )}
     </section>

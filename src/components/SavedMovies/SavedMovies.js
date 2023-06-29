@@ -8,7 +8,7 @@ import Preloader from "../Preloader/Preloader";
 import MainApi from "../../utils/MainApi";
 
 const SavedMovies = ({ isLoggedIn }) => {
-  const [films, setFilms] = useState(null);
+  const [films, setFilms] = useState([]);
   const [preloader, setPreloader] = useState(false);
   const [errorText, setErrorText] = useState("");
   const [MoviesCount, setMoviesCount] = useState([]);
@@ -67,9 +67,13 @@ const SavedMovies = ({ isLoggedIn }) => {
     if (!favorite) {
       try {
         await mainApi.deleteMovies(film._id);
-        const newFilms = await mainApi.getFavorite();
-        setFilmsShowed(newFilms);
-        setFilms(newFilms);
+        const savedMovies = JSON.parse(localStorage.getItem('savedFilms'));
+        const newSaved = savedMovies.filter((element) => {
+          return element._id !== film._id;
+        })
+        setFilmsShowed(newSaved);
+        setFilms(newSaved);
+        localStorage.setItem('savedFilms', JSON.stringify(newSaved));
       } catch (err) {
         setErrorText("Невозможно удалить фильм из избранного");
       }
@@ -80,6 +84,7 @@ const SavedMovies = ({ isLoggedIn }) => {
     const localStorageFilms = localStorage.getItem("savedFilms");
     if (localStorageFilms) {
       setFilms(JSON.parse(localStorageFilms));
+      setFilmsShowed(JSON.parse(localStorageFilms));
       const localStorageFilmsTumbler =
         localStorage.getItem("savedFilmsTumbler");
 
@@ -131,12 +136,14 @@ const SavedMovies = ({ isLoggedIn }) => {
   }
 
   function handleMore() {
-    const spliceFilms = films;
+    const sliceFilms = films;
     const newFilmsShowed = filmsShowed.concat(
-      spliceFilms.slice(filmsShowed.length, MoviesCount[1] + filmsShowed.length)
+      sliceFilms.slice(filmsShowed.length, MoviesCount[1] + filmsShowed.length)
     );
     setFilmsShowed(newFilmsShowed);
   }
+
+  console.log(films.length - filmsShowed.length);
 
   return (
     <section>
@@ -154,7 +161,6 @@ const SavedMovies = ({ isLoggedIn }) => {
         savedMoviesToggle={savedMoviesToggle}
         films={filmsShowed}
       />
-      <More onClick={handleMore}/>
       <Footer />
     </section>
   );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import './Movies.css';
+import "./Movies.css";
 import Header from "../Header/Header";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
@@ -64,11 +64,9 @@ const Movies = ({ openPopup }) => {
   function handleMore() {
     const spliceFilms = films;
     const newFilmsShowed = filmsShowed.concat(
-      spliceFilms.slice(
-        filmsShowed.length,
-        MoviesCount[1] + filmsShowed.length
-      )
+      spliceFilms.slice(filmsShowed.length, MoviesCount[1] + filmsShowed.length)
     );
+    console.log(newFilmsShowed.map((film) => film.id));
     setFilmsShowed(newFilmsShowed);
   }
 
@@ -84,20 +82,49 @@ const Movies = ({ openPopup }) => {
     }
 
     setErrorText("");
-    setPreloader(true);
+    
 
     try {
-      const data = await moviesApi.getMovies();
+      let films = [];
+      const localStorageFilms = localStorage.getItem("films");
+      if (localStorageFilms) {
+        const filterData = JSON.parse(localStorageFilms);
+        films = filterData;
+        setFilms(filterData);
+        setFilmsShowed(filterData);
+        setPreloader(false);
+      } else {
+        moviesApi
+          .getMovies()
+          .then((filmsFromServer) => {
+            setPreloader(true);
+            setFilms(filmsFromServer);
+            films = filmsFromServer;
+            localStorage.setItem("films", JSON.stringify(filmsFromServer));
+          })
+          .then(() => {
+            const localStorageFilms = localStorage.getItem("films");
+            const filterData = JSON.parse(localStorageFilms);
+            films = filterData;
+            setFilms(filterData);
+            setFilmsShowed(filterData);
+            setPreloader(false);
+          })
+          .catch((err) => {
+            openPopup(`Ошибка сервера ${err}`);
+          });
+      }
+      const data = films;
       let filterData = data.filter(({ nameRU }) =>
         nameRU.toLowerCase().includes(inputSearch.toLowerCase())
       );
-      localStorage.setItem("films", JSON.stringify(filterData));
+      console.log(filterData);
       localStorage.setItem("filmsInputSearch", inputSearch);
 
-      const spliceData = filterData.splice(0, MoviesCount[0]);
-      setFilmsShowed(spliceData);
+      const sliceData = filterData.slice(0, MoviesCount[0] + 1);
+      setFilmsShowed(sliceData);
       setFilms(filterData);
-      setFilmsShowedWithTumbler(spliceData);
+      setFilmsShowedWithTumbler(sliceData);
       setFilmsWithTumbler(filterData);
     } catch (err) {
       setErrorText(
@@ -151,44 +178,40 @@ const Movies = ({ openPopup }) => {
         nameEN: film.nameEN,
       };
       try {
-        await mainApi.addMovies(objFilm);
-        const newSaved = await mainApi.getFavorite();
+        const res = await mainApi.addMovies(objFilm);
+        const savedMovies = JSON.parse(localStorage.getItem("savedFilms"));
+        const newSaved = savedMovies.concat(res);
         setFilmsSaved(newSaved);
+        localStorage.setItem("savedFilms", JSON.stringify(newSaved));
       } catch (err) {
         console.log(err);
       }
     } else {
       try {
         await mainApi.deleteMovies(film._id);
-        const newSaved = await mainApi.getFavorite();
+        const savedMovies = JSON.parse(localStorage.getItem("savedFilms"));
+        const newSaved = savedMovies.filter((element) => {
+          return element._id !== film._id;
+        });
         setFilmsSaved(newSaved);
+        localStorage.setItem("savedFilms", JSON.stringify(newSaved));
       } catch (err) {
-        console.log("Во время удаления фильма произошла ошибка.");
+        console.log(`${err}`);
       }
     }
   }
 
   useEffect(() => {
-    moviesApi
-      .getMovies()
-      .then((films) => {
-        setFilms(films);
-      })
-      .catch((err) => {
-        openPopup(`Ошибка сервера ${err}`);
+    const localStorageFilmsSaved = localStorage.getItem("savedFilms");
+
+    if (!localStorageFilmsSaved) {
+      mainApi.getFavorite().then((savedFilms) => {
+        setFilmsSaved(savedFilms);
+        localStorage.setItem("savedFilms", JSON.stringify(savedFilms));
       });
-
-    const localStorageFilms = localStorage.getItem("films");
-
-    mainApi.getFavorite().then((savedFilms) => {
-      setFilmsSaved(savedFilms);
-    });
-
-    if (localStorageFilms) {
-      const filterData = JSON.parse(localStorageFilms);
-      setFilmsShowed(filterData.splice(0, getMoviesCount()[0]));
-      setFilms(filterData);
-      setPreloader(false);
+    } else {
+      const savedLocalFilms = JSON.parse(localStorageFilmsSaved);
+      setFilmsSaved(savedLocalFilms);
     }
 
     const localStorageFilmsTumbler = localStorage.getItem("filmsTumbler");
@@ -221,7 +244,7 @@ const Movies = ({ openPopup }) => {
         filmsSaved !== null &&
         filmsShowed !== null && (
           <MoviesCardList
-            filmsRemains={films}
+            filmsRemains={films.length - filmsShowed.length}
             handleMore={handleMore}
             films={filmsShowed}
             savedMoviesToggle={savedMoviesToggle}

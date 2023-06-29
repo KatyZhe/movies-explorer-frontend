@@ -28,8 +28,6 @@ const MoviesCard = ({ film, savedMoviesToggle, filmsSaved }) => {
         return obj.movieId == film.id;
       });
 
-      console.log(filmsSaved, film.id, savedFilm);
-
       if (savedFilm.length > 0) {
         setFavorite(true);
       } else {
