@@ -143,8 +143,6 @@ const SavedMovies = ({ isLoggedIn }) => {
     setFilmsShowed(newFilmsShowed);
   }
 
-  console.log(films.length - filmsShowed.length);
-
   return (
     <section>
       <Header isLoggedIn={isLoggedIn} />

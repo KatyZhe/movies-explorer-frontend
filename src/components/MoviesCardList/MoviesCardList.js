@@ -6,7 +6,6 @@ import More from '../More/More';
 
 const MoviesCardList = ({ films, savedMoviesToggle, filmsSaved, filmsRemains, handleMore }) => {
   const { pathname } = useLocation();
-  console.log(filmsRemains);
 
   return (
     <section className="cards">

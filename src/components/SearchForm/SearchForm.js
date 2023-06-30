@@ -50,8 +50,8 @@ const SearchForm = ({ handleGetMovies, filmsTumbler, filmsInputSearch, handleGet
             <input
               type="checkbox"
               className="search__checkbox"
-              value={tumbler}
-              checked={tumbler}
+              value={!tumbler}
+              checked={!tumbler}
               onChange={handleTumblerChange}
             />
             <span className="search__slider" />

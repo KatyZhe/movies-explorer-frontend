@@ -66,15 +66,16 @@ const Movies = ({ openPopup }) => {
     const newFilmsShowed = filmsShowed.concat(
       spliceFilms.slice(filmsShowed.length, MoviesCount[1] + filmsShowed.length)
     );
-    console.log(newFilmsShowed.map((film) => film.id));
     setFilmsShowed(newFilmsShowed);
   }
 
   /* Поиск фильмов */
 
   async function handleGetMovies(inputSearch) {
-    setFilmsTumbler(false);
-    localStorage.setItem("filmsTumbler", false);
+    //setFilmsTumbler(false);
+    setPreloader(true);
+    localStorage.setItem("filmsTumbler", filmsTumbler);
+    //localStorage.setItem('filmsInputSearch', inputSearch);
 
     if (!inputSearch) {
       setErrorText("Нужно ввести ключевое слово");
@@ -82,44 +83,35 @@ const Movies = ({ openPopup }) => {
     }
 
     setErrorText("");
-    
 
     try {
       let films = [];
       const localStorageFilms = localStorage.getItem("films");
       if (localStorageFilms) {
-        const filterData = JSON.parse(localStorageFilms);
-        films = filterData;
-        setFilms(filterData);
-        setFilmsShowed(filterData);
+        const allFilms = JSON.parse(localStorageFilms);
+        films = allFilms;
+        setFilms(allFilms);
+        setFilmsShowed(allFilms);
         setPreloader(false);
       } else {
-        moviesApi
+        await moviesApi
           .getMovies()
           .then((filmsFromServer) => {
-            setPreloader(true);
             setFilms(filmsFromServer);
             films = filmsFromServer;
             localStorage.setItem("films", JSON.stringify(filmsFromServer));
           })
-          .then(() => {
-            const localStorageFilms = localStorage.getItem("films");
-            const filterData = JSON.parse(localStorageFilms);
-            films = filterData;
-            setFilms(filterData);
-            setFilmsShowed(filterData);
-            setPreloader(false);
-          })
           .catch((err) => {
-            openPopup(`Ошибка сервера ${err}`);
-          });
+            console.log(`Ошибка сервера ${err}`);
+          })
+          .finally(() => setPreloader(false));
       }
       const data = films;
       let filterData = data.filter(({ nameRU }) =>
         nameRU.toLowerCase().includes(inputSearch.toLowerCase())
       );
-      console.log(filterData);
       localStorage.setItem("filmsInputSearch", inputSearch);
+      localStorage.setItem("searchedMovies", JSON.stringify(filterData));
 
       const sliceData = filterData.slice(0, MoviesCount[0] + 1);
       setFilmsShowed(sliceData);
@@ -147,17 +139,16 @@ const Movies = ({ openPopup }) => {
     let filterData = [];
 
     if (tumbler) {
-      setFilmsShowedWithTumbler(filmsShowed);
-      setFilmsWithTumbler(films);
-      filterDataShowed = filmsShowed.filter(({ duration }) => duration <= 40);
       filterData = films.filter(({ duration }) => duration <= 40);
+      localStorage.setItem("shortSearchedMovies", JSON.stringify(filterData));
+      setFilmsShowedWithTumbler(filterData.slice(0, MoviesCount[0] + 1));
+      setFilmsWithTumbler(filterData);
     } else {
       filterDataShowed = filmsShowedWithTumbler;
       filterData = filmsWithTumbler;
     }
-
-    setFilmsShowed(filterDataShowed);
-    setFilms(filterData);
+    setFilmsTumbler(tumbler);
+    localStorage.setItem("filmsTumbler", tumbler);
   }
 
   /* Добавление в сохраненные фильмы */
@@ -225,6 +216,24 @@ const Movies = ({ openPopup }) => {
     if (localStorageFilmsInputSearch) {
       setFilmsInputSearch(localStorageFilmsInputSearch);
     }
+
+    if (localStorageFilmsTumbler === "true") {
+      const shortSearchedMovies =
+        JSON.parse(localStorage.getItem("shortSearchedMovies")) || [];
+      const sliceShortData = shortSearchedMovies.slice(
+        0,
+        getMoviesCount()[0] + 1
+      );
+      setFilmsTumbler(true);
+      setFilmsShowedWithTumbler(sliceShortData);
+      setFilmsWithTumbler(shortSearchedMovies);
+      //} else {
+    }
+    const searchedMovies =
+      JSON.parse(localStorage.getItem("searchedMovies")) || [];
+    const sliceData = searchedMovies.slice(0, getMoviesCount()[0] + 1);
+    setFilmsShowed(sliceData);
+    setFilms(searchedMovies);
   }, [openPopup]);
 
   return (
@@ -244,9 +253,13 @@ const Movies = ({ openPopup }) => {
         filmsSaved !== null &&
         filmsShowed !== null && (
           <MoviesCardList
-            filmsRemains={films.length - filmsShowed.length}
+            filmsRemains={
+              filmsTumbler
+                ? filmsWithTumbler.length - filmsShowedWithTumbler.length
+                : films.length - filmsShowed.length
+            }
             handleMore={handleMore}
-            films={filmsShowed}
+            films={filmsTumbler ? filmsShowedWithTumbler : filmsShowed}
             savedMoviesToggle={savedMoviesToggle}
             filmsSaved={filmsSaved}
           />
