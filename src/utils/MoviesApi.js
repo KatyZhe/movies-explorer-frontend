@@ -12,8 +12,8 @@ class MoviesApi {
     return Promise.reject(`Ошибка: ${res.status}`);
   };
 
-  getMovies() {
-    return fetch(`${this._url}`, {
+  getMovies = async() => {
+    return await fetch(`${this._url}`, {
       method: 'GET',
       headers: this._headers,
     }).then(this._checkResponse);

@@ -7,8 +7,9 @@ import Preloader from "../Preloader/Preloader";
 import moviesApi from "../../utils/MoviesApi";
 import MainApi from "../../utils/MainApi";
 import Footer from "../Footer/Footer";
+import { useMovies } from "../../hooks/useMovies";
 
-const Movies = ({ openPopup }) => {
+const Movies = () => {
   const [films, setFilms] = useState(null);
   const [filmsSaved, setFilmsSaved] = useState(null);
   const [preloader, setPreloader] = useState(false);
@@ -19,6 +20,15 @@ const Movies = ({ openPopup }) => {
   const [filmsShowed, setFilmsShowed] = useState(null);
   const [filmsWithTumbler, setFilmsWithTumbler] = useState([]);
   const [filmsShowedWithTumbler, setFilmsShowedWithTumbler] = useState([]);
+  const {
+    handleSetSearch,
+    handleSetShortFilms,
+    filteredFilms,
+    notFound,
+    initFilms,
+    shortFilms,
+    search,
+  } = useMovies(moviesApi.getMovies);
 
   const mainApi = new MainApi({
     url: "https://api.katyzhe.nomoredomains.rocks",
@@ -62,20 +72,85 @@ const Movies = ({ openPopup }) => {
   }
 
   function handleMore() {
-    const spliceFilms = films;
+    const spliceFilms = filteredFilms;
     const newFilmsShowed = filmsShowed.concat(
       spliceFilms.slice(filmsShowed.length, MoviesCount[1] + filmsShowed.length)
     );
     setFilmsShowed(newFilmsShowed);
   }
 
+  useEffect(() => {
+    const sliceData = filteredFilms.slice(0, MoviesCount[0] + 1);
+    setFilmsShowed(sliceData);
+  }, [filteredFilms]);
+
   /* Поиск фильмов */
 
-  async function handleGetMovies(inputSearch) {
-    //setFilmsTumbler(false);
-    setPreloader(true);
-    localStorage.setItem("filmsTumbler", filmsTumbler);
-    //localStorage.setItem('filmsInputSearch', inputSearch);
+  // async function handleGetMovies(inputSearch) {
+  //   setPreloader(true);
+  //   localStorage.setItem("filmsTumbler", filmsTumbler);
+  //   localStorage.setItem("filmsInputSearch", inputSearch);
+
+  //   if (!inputSearch) {
+  //     setErrorText("Нужно ввести ключевое слово");
+  //     return false;
+  //   }
+
+  //   setErrorText("");
+
+  //   try {
+  //     let films = [];
+  //     const localStorageFilms = localStorage.getItem("films");
+  //     if (localStorageFilms) {
+  //       const allFilms = JSON.parse(localStorageFilms);
+  //       films = allFilms;
+  //       setFilms(allFilms);
+  //       setFilmsShowed(allFilms);
+  //       setPreloader(false);
+  //     } else {
+  //       await moviesApi
+  //         .getMovies()
+  //         .then((filmsFromServer) => {
+  //           setFilms(filmsFromServer);
+  //           films = filmsFromServer;
+  //           localStorage.setItem("films", JSON.stringify(filmsFromServer));
+  //         })
+  //         .catch((err) => {
+  //           console.log(`Ошибка сервера ${err}`);
+  //         })
+  //         .finally(() => setPreloader(false));
+  //     }
+  //     const data = films;
+  //     let filterData = data.filter(({ nameRU }) =>
+  //       nameRU.toLowerCase().includes(inputSearch.toLowerCase())
+  //     );
+  //     localStorage.setItem("filmsInputSearch", inputSearch);
+  //     localStorage.setItem("searchedMovies", JSON.stringify(filterData));
+
+  //     const sliceData = filterData.slice(0, MoviesCount[0] + 1);
+  //     setFilmsShowed(sliceData);
+  //     setFilms(filterData);
+  //     setFilmsShowedWithTumbler(sliceData);
+  //     setFilmsWithTumbler(filterData);
+  //   } catch (err) {
+  //     setErrorText(
+  //       "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"
+  //     );
+
+  //     setFilms([]);
+  //     localStorage.removeItem("films");
+  //     localStorage.removeItem("filmsTumbler");
+  //     localStorage.removeItem("filmsInputSearch");
+  //   } finally {
+  //     setPreloader(false);
+  //   }
+  // }
+
+  /* Короткометражки */
+
+  async function handleGetMoviesTumbler(tumbler, inputSearch) {
+    let filterDataShowed = [];
+    let filterData = [];
 
     if (!inputSearch) {
       setErrorText("Нужно ввести ключевое слово");
@@ -91,7 +166,7 @@ const Movies = ({ openPopup }) => {
         const allFilms = JSON.parse(localStorageFilms);
         films = allFilms;
         setFilms(allFilms);
-        setFilmsShowed(allFilms);
+        //setFilmsShowed(allFilms);
         setPreloader(false);
       } else {
         await moviesApi
@@ -110,45 +185,45 @@ const Movies = ({ openPopup }) => {
       let filterData = data.filter(({ nameRU }) =>
         nameRU.toLowerCase().includes(inputSearch.toLowerCase())
       );
-      localStorage.setItem("filmsInputSearch", inputSearch);
-      localStorage.setItem("searchedMovies", JSON.stringify(filterData));
+      if (tumbler) {
+        filterData = filterData.filter(({ duration }) => duration <= 40);
+        const sliceData = filterData.slice(0, MoviesCount[0] + 1);
+        localStorage.setItem("shortSearchedMovies", JSON.stringify(filterData));
+        setFilmsShowedWithTumbler(sliceData);
+        setFilmsWithTumbler(filterData);
+      } else {
+        localStorage.setItem("searchedMovies", JSON.stringify(filterData));
+        const sliceData = filterData.slice(0, MoviesCount[0] + 1);
+        setFilmsShowed(sliceData);
+        setFilms(filterData);
+      }
 
-      const sliceData = filterData.slice(0, MoviesCount[0] + 1);
-      setFilmsShowed(sliceData);
-      setFilms(filterData);
-      setFilmsShowedWithTumbler(sliceData);
-      setFilmsWithTumbler(filterData);
+      //.filter(({ duration }) => duration <= 40);
+      localStorage.setItem("filmsInputSearch", inputSearch);
+      //localStorage.setItem("shortSearchedMovies", JSON.stringify(filterData));
+
+      //const sliceData = filterData.slice(0, MoviesCount[0] + 1);
+      // setFilmsShowed(sliceData);
+      // setFilms(filterData);
+      // setFilmsShowedWithTumbler(sliceData);
+      // setFilmsWithTumbler(filterData);
     } catch (err) {
       setErrorText(
         "Во время запроса произошла ошибка. Возможно, проблема с соединением или сервер недоступен. Подождите немного и попробуйте ещё раз"
       );
-
-      setFilms([]);
-      localStorage.removeItem("films");
-      localStorage.removeItem("filmsTumbler");
-      localStorage.removeItem("filmsInputSearch");
-    } finally {
-      setPreloader(false);
     }
-  }
-
-  /* Короткометражки */
-
-  async function handleGetMoviesTumbler(tumbler) {
-    let filterDataShowed = [];
-    let filterData = [];
-
-    if (tumbler) {
-      filterData = films.filter(({ duration }) => duration <= 40);
-      localStorage.setItem("shortSearchedMovies", JSON.stringify(filterData));
-      setFilmsShowedWithTumbler(filterData.slice(0, MoviesCount[0] + 1));
-      setFilmsWithTumbler(filterData);
-    } else {
-      filterDataShowed = filmsShowedWithTumbler;
-      filterData = filmsWithTumbler;
-    }
+    // if (tumbler) {
+    //   filterData = films.filter(({ duration }) => duration <= 40);
+    //   localStorage.setItem("shortSearchedMovies", JSON.stringify(filterData));
+    //   setFilmsShowedWithTumbler(filterData.slice(0, MoviesCount[0] + 1));
+    //   setFilmsWithTumbler(filterData);
+    // } else {
+    //   filterDataShowed = filmsShowedWithTumbler;
+    //   filterData = filmsWithTumbler;
+    // }
     setFilmsTumbler(tumbler);
     localStorage.setItem("filmsTumbler", tumbler);
+    localStorage.setItem("filmsInputSearch", inputSearch);
   }
 
   /* Добавление в сохраненные фильмы */
@@ -196,7 +271,7 @@ const Movies = ({ openPopup }) => {
     const localStorageFilmsSaved = localStorage.getItem("savedFilms");
 
     if (!localStorageFilmsSaved) {
-      mainApi.getFavorite().then((savedFilms) => {
+      mainApi.getFavorite().then((savedFilms) => { //идет два запроса на сервер - за сохраненными фильмами и из хука useMovies
         setFilmsSaved(savedFilms);
         localStorage.setItem("savedFilms", JSON.stringify(savedFilms));
       });
@@ -204,66 +279,28 @@ const Movies = ({ openPopup }) => {
       const savedLocalFilms = JSON.parse(localStorageFilmsSaved);
       setFilmsSaved(savedLocalFilms);
     }
-
-    const localStorageFilmsTumbler = localStorage.getItem("filmsTumbler");
-    const localStorageFilmsInputSearch =
-      localStorage.getItem("filmsInputSearch");
-
-    if (localStorageFilmsTumbler) {
-      setFilmsTumbler(localStorageFilmsTumbler === "true");
-    }
-
-    if (localStorageFilmsInputSearch) {
-      setFilmsInputSearch(localStorageFilmsInputSearch);
-    }
-
-    if (localStorageFilmsTumbler === "true") {
-      const shortSearchedMovies =
-        JSON.parse(localStorage.getItem("shortSearchedMovies")) || [];
-      const sliceShortData = shortSearchedMovies.slice(
-        0,
-        getMoviesCount()[0] + 1
-      );
-      setFilmsTumbler(true);
-      setFilmsShowedWithTumbler(sliceShortData);
-      setFilmsWithTumbler(shortSearchedMovies);
-      //} else {
-    }
-    const searchedMovies =
-      JSON.parse(localStorage.getItem("searchedMovies")) || [];
-    const sliceData = searchedMovies.slice(0, getMoviesCount()[0] + 1);
-    setFilmsShowed(sliceData);
-    setFilms(searchedMovies);
-  }, [openPopup]);
+  }, []);
 
   return (
     <section>
       <Header isLoggedIn={true} />
       <SearchForm
-        handleGetMovies={handleGetMovies}
-        filmsTumbler={filmsTumbler}
-        filmsInputSearch={filmsInputSearch}
-        handleGetMoviesTumbler={handleGetMoviesTumbler}
+        shortFilms={shortFilms}
+        handleSetSearch={handleSetSearch}
+        handleShortFilms={handleSetShortFilms}
+        search={search}
       />
       {preloader && <Preloader />}
       {errorText && <div className="movies__text-error">{errorText}</div>}
-      {!preloader &&
-        !errorText &&
-        films !== null &&
-        filmsSaved !== null &&
-        filmsShowed !== null && (
-          <MoviesCardList
-            filmsRemains={
-              filmsTumbler
-                ? filmsWithTumbler.length - filmsShowedWithTumbler.length
-                : films.length - filmsShowed.length
-            }
-            handleMore={handleMore}
-            films={filmsTumbler ? filmsShowedWithTumbler : filmsShowed}
-            savedMoviesToggle={savedMoviesToggle}
-            filmsSaved={filmsSaved}
-          />
-        )}
+      {!errorText && filteredFilms !== null && filmsShowed !== null && (
+        <MoviesCardList
+          filmsRemains={filteredFilms.length - filmsShowed.length}
+          handleMore={handleMore}
+          films={filmsShowed}
+          savedMoviesToggle={savedMoviesToggle}
+          filmsSaved={filmsSaved}
+        />
+      )}
       <Footer />
     </section>
   );

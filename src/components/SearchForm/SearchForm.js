@@ -1,29 +1,23 @@
+import { useState } from "react";
 import "./SearchForm.css";
-import { useEffect, useState } from 'react';
 
-const SearchForm = ({ handleGetMovies, filmsTumbler, filmsInputSearch, handleGetMoviesTumbler }) => {
-  const [inputSearch, setInputSearch] = useState('');
-  const [tumbler, setTumbler] = useState(false);
+const SearchForm = ({ handleShortFilms, shortFilms, handleSetSearch, search }) => {
+const [input, setInput] = useState(search);
 
   function handleInputChange(evt) {
-    setInputSearch(evt.target.value);
+    setInput(evt.target.value);
   }
 
   function handleTumblerChange(evt) {
-    const newTumbler = !tumbler;
-    setTumbler(newTumbler);
-    handleGetMoviesTumbler(newTumbler);
+    evt.preventDefault();
+    const newTumbler = !shortFilms;
+    handleShortFilms(newTumbler);
   }
 
   function handleSubmit(evt) {
     evt.preventDefault();
-    handleGetMovies(inputSearch);
+    handleSetSearch(input);
   }
-
-  useEffect(() => {
-    setTumbler(filmsTumbler);
-    setInputSearch(filmsInputSearch);
-  }, [filmsTumbler, filmsInputSearch]);
 
   return (
     <section className="search">
@@ -35,7 +29,7 @@ const SearchForm = ({ handleGetMovies, filmsTumbler, filmsInputSearch, handleGet
             type="text"
             name="search"
             placeholder="Фильм"
-            value={inputSearch || ""}
+            value={input || ""}
             onChange={handleInputChange}
             required
           />
@@ -50,8 +44,8 @@ const SearchForm = ({ handleGetMovies, filmsTumbler, filmsInputSearch, handleGet
             <input
               type="checkbox"
               className="search__checkbox"
-              value={!tumbler}
-              checked={!tumbler}
+              value={!shortFilms}
+              checked={!shortFilms}
               onChange={handleTumblerChange}
             />
             <span className="search__slider" />

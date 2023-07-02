@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import "./Register.css";
 import logo from "../../images/logo.svg";
 import useForm from "../../hooks/useForm";
-import isEmail from 'validator/es/lib/isEmail';
 
 const Register = ({ onRegister, isLoggedIn }) => {
   const { enteredValues, handleChange, errors, isFormValid } = useForm();

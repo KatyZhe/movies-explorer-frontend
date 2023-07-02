@@ -61,7 +61,7 @@ const App = () => {
           handleAuthorization(enteredValues);
         }
       })
-      .catch((error) => { //раз открывается popup значит есть какая-то ошибка
+      .catch((error) => {
         setPopupMessage(error);
         setIsPopupOpen(true);
       });
@@ -77,7 +77,7 @@ const App = () => {
           navigate("/movies", { replace: true });
         }
       })
-      .catch((error) => { //раз открывается popup значит есть какая-то ошибка
+      .catch((error) => {
         setPopupMessage(error);
         setIsPopupOpen(true);
       });
@@ -156,7 +156,6 @@ const App = () => {
                 isLoggedIn={isLoggedIn}
                 savedMovies={savedMovies}
                 onLoading={setIsLoading}
-                //savedMoviesToggle={savedMoviesToggle}
                 setPopupMessage={setPopupMessage}
                 setIsPopupOpen={setIsPopupOpen}
               />
@@ -171,7 +170,6 @@ const App = () => {
                 isLoading={isLoading}
                 isLoggedIn={isLoggedIn}
                 savedMovies={savedMovies}
-                //onDelete={handleDeleteMovie}
                 setPopupMessage={setPopupMessage}
                 setIsPopupOpen={setIsPopupOpen}
               />

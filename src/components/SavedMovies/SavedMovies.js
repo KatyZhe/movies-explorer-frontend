@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import Header from "../Header/Header";
 import MoviesCardList from "../MoviesCardList/MoviesCardList";
 import SearchForm from "../SearchForm/SearchForm";
-import More from "../More/More";
 import Footer from "../Footer/Footer";
 import Preloader from "../Preloader/Preloader";
 import MainApi from "../../utils/MainApi";
