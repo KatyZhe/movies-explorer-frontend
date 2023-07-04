@@ -1,56 +1,87 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 
 export const useMovies = (fetchFilms) => {
-  //fetchFilms - это обращение к функции в апи. Мы ее здесь пробрасываем, чтобы использовать для всех фильмов + для сохраненных
   const [state, setState] = useState({
     isLoading: false,
     films: [],
     error: null,
   });
-  const localStorageSearch = localStorage.getItem('searchInput') || '';
-  const localStorageTumbler = localStorage.getItem('checked') === 'true';
+  const localStorageSearch = localStorage.getItem("searchInput") || "";
+  const localStorageTumbler = localStorage.getItem("checked") === "true";
 
   const [search, setSearch] = useState(localStorageSearch);
   const [shortFilms, setShortFilms] = useState(localStorageTumbler);
   const SHORT_DURATION = 40;
 
-  useEffect(() => {
-    setState({
-      ...state,
-      isLoading: true,
-    });
-    const handleFetchFilms = async () => {
-      try {
-        let films = [];
-        const isFilmsLocalstorage = JSON.parse(localStorage.getItem("films"));
-        if (isFilmsLocalstorage) {
-          films = isFilmsLocalstorage;
-        } else {
-          films = await fetchFilms();
-        }
-        //const films = fetchFilms(); //moviesApi.getMovies(); чтобы использовать для короткометражек мы прокидываем функцию fetchFilms вместо запроса на сервер
+  // useEffect(() => {
+  //   setState({
+  //     ...state,
+  //     isLoading: true,
+  //   });
+  //   const handleFetchFilms = async () => {
+  //     try {
+  //       let films = [];
+  //       const isFilmsLocalstorage = JSON.parse(localStorage.getItem("films"));
+  //       if (isFilmsLocalstorage) {
+  //         films = isFilmsLocalstorage;
+  //       } else {
+  //         films = await fetchFilms(); //выходит, что при каждом изменении стейта идет запрос на сервер?
+  //         //localStorage.setItem('films', JSON.stringify(films)); // какой из них надо удалить - этот?
+  //       }
 
-        setState((state) => ({
-          ...state,
-          films,
-        }));
-      } catch (error) {
-        setState((state) => ({
-          ...state,
-          error: error.errorText,
-        }));
-      } finally {
-        setState((state) => ({
-          ...state,
-          isLoading: false,
-        }));
-      }
-    };
-    handleFetchFilms();
-  }, []);
+  //       setState((state) => ({
+  //         ...state,
+  //         films,
+  //       }));
+  //     } catch (error) {
+  //       setState((state) => ({
+  //         ...state,
+  //         error: error.errorText,
+  //       }));
+  //     } finally {
+  //       setState((state) => ({
+  //         ...state,
+  //         isLoading: false,
+  //       }));
+  //     }
+  //   };
+  //   handleFetchFilms();
+  // }, []);
 
   const filtredFilms = useMemo(() => {
     const { films } = state;
+    if (state.isLoading || search === "") {
+      return [];
+    }
+    if (!films.length) {
+      setState({
+        ...state,
+        isLoading: true,
+      });
+      const handleFetchFilms = async () => {
+        try {
+          let films = [];
+          films = await fetchFilms(); //выходит, что при каждом изменении стейта идет запрос на сервер?
+
+          setState((state) => ({
+            ...state,
+            films,
+          }));
+        } catch (error) {
+          setState((state) => ({
+            ...state,
+            error: error.errorText,
+          }));
+        } finally {
+          setState((state) => ({
+            ...state,
+            isLoading: false,
+          }));
+        }
+      };
+      handleFetchFilms();
+      return ([]);
+    }
 
     if (!search && !shortFilms) {
       return films;
@@ -81,9 +112,9 @@ export const useMovies = (fetchFilms) => {
         }
       }
     }
-    localStorage.setItem("searchedFilms", JSON.stringify(result));
+    localStorage.setItem("searchedFilms", JSON.stringify(result)); // какой из них надо удалить - этот?
     return result;
-  }, [search, shortFilms, state]);
+  }, [search, shortFilms, state.isLoading]);
 
   /* фильмы не найдены */
 

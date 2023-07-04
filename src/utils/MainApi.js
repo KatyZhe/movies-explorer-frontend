@@ -33,8 +33,8 @@ export default class MainApi {
     }).then((res) => this._checkResponse(res));
   }
 
-  getFavorite() {
-    return fetch(`${this._url}/movies`, {
+  async getFavorite() {
+    return await fetch(`${this._url}/movies`, {
       method: 'GET',
       headers: this._headers,
     }).then(this._checkResponse);

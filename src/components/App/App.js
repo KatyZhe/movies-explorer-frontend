@@ -15,17 +15,22 @@ import Popup from "../Popup/Popup";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import MainApi from "../../utils/MainApi";
 import { auth } from "../../utils/auth";
+import { useMovies } from "../../hooks/useMovies";
+
+import moviesApi from "../../utils/MoviesApi";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  const [savedMovies, setSavedMovies] = useState([]);
+  //const [savedMovies, setSavedMovies] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
+
+  const moviesHook = useMovies(moviesApi.getMovies);
 
   const mainApi = new MainApi({
     url: "https://api.katyzhe.nomoredomains.rocks",
@@ -50,7 +55,6 @@ const App = () => {
           console.log(`${err}`);
         });
     }
-
   }, []);
 
   const handleRegistration = (enteredValues) => {
@@ -118,17 +122,17 @@ const App = () => {
   };
 
   useEffect(() => {
-    const jwt = localStorage.getItem('jwt');
-    if(jwt && isLoggedIn) {
+    const jwt = localStorage.getItem("jwt");
+    if (jwt && isLoggedIn) {
       mainApi
-      .getUserInfo()
-      .then((userData) => {
-        setCurrentUser(userData);
-        setIsLoggedIn(true);
-      })
-      .catch((err) => {
-        console.error(`Ошибка: ${err}`);
-      });
+        .getUserInfo()
+        .then((userData) => {
+          setCurrentUser(userData);
+          setIsLoggedIn(true);
+        })
+        .catch((err) => {
+          console.error(`Ошибка: ${err}`);
+        });
     }
   }, [isLoggedIn]);
 
@@ -151,10 +155,11 @@ const App = () => {
             path="/movies"
             element={
               <ProtectedRoute
+                moviesHook={moviesHook}
                 isLoading={isLoading}
                 component={Movies}
                 isLoggedIn={isLoggedIn}
-                savedMovies={savedMovies}
+                //savedMovies={savedMovies}
                 onLoading={setIsLoading}
                 setPopupMessage={setPopupMessage}
                 setIsPopupOpen={setIsPopupOpen}
@@ -169,7 +174,7 @@ const App = () => {
                 component={SavedMovies}
                 isLoading={isLoading}
                 isLoggedIn={isLoggedIn}
-                savedMovies={savedMovies}
+                //savedMovies={savedMovies}
                 setPopupMessage={setPopupMessage}
                 setIsPopupOpen={setIsPopupOpen}
               />
