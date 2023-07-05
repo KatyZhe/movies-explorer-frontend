@@ -6,11 +6,11 @@ export const useSavedMovies = (MainApi) => {
     films: [],
     error: null,
   });
-  const localStorageSearch = localStorage.getItem("savedSearchInput") || "";
-  const localStorageTumbler = localStorage.getItem("savedChecked") === "true";
+  // const localStorageSearch = localStorage.getItem("savedSearchInput") || "";
+  // const localStorageTumbler = localStorage.getItem("savedChecked") === "true";
 
-  const [search, setSearch] = useState(localStorageSearch);
-  const [shortFilms, setShortFilms] = useState(localStorageTumbler);
+  const [search, setSearch] = useState('');
+  const [shortFilms, setShortFilms] = useState(false);
   const SHORT_DURATION = 40;
 
   useEffect(() => {
@@ -28,7 +28,6 @@ export const useSavedMovies = (MainApi) => {
           films = isFilmsLocalstorage;
         } else {
           films = await MainApi.getFavorites(); //выходит, что при каждом изменении стейта идет запрос на сервер?
-          //localStorage.setItem('savedFilms', JSON.stringify(films));
         }
 
         setState((state) => ({
@@ -61,7 +60,7 @@ export const useSavedMovies = (MainApi) => {
 
     for (const film of films) {
       const { nameRU, duration } = film;
-      const searched = search && nameRU.includes(search);
+      const searched = search && nameRU.includes(search.toLowerCase());
       const short = shortFilms && duration < SHORT_DURATION;
 
       if (search && shortFilms) {
@@ -93,13 +92,13 @@ export const useSavedMovies = (MainApi) => {
   /* при сабмите устанавливаем сюда значение */
   const handleSetSearch = useCallback((value) => {
     setSearch(value);
-    localStorage.setItem("savedSearchInput", value);
+    //localStorage.setItem("savedSearchInput", value);
   }, []);
 
   /* при клике на чек-бокс достаем значение checked и устанавливаем state */
   const handleSetShortFilms = useCallback((checked) => {
     setShortFilms(checked);
-    localStorage.setItem("savedChecked", checked);
+    //localStorage.setItem("savedChecked", checked);
   }, []);
 
   const handleDeleteSaved = async (film) => {

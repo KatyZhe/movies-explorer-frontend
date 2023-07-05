@@ -79,7 +79,6 @@ const Movies = () => {
   useEffect(() => {
     const sliceData = filteredFilms.slice(0, getMoviesCount()[0] + 1);
     setFilmsShowed(sliceData);
-    console.log(sliceData, filteredFilms, getMoviesCount()[0]);
   }, [filteredFilms]);
 
   /* Добавление в сохраненные фильмы */

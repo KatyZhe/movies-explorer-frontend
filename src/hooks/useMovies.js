@@ -13,41 +13,6 @@ export const useMovies = (fetchFilms) => {
   const [shortFilms, setShortFilms] = useState(localStorageTumbler);
   const SHORT_DURATION = 40;
 
-  // useEffect(() => {
-  //   setState({
-  //     ...state,
-  //     isLoading: true,
-  //   });
-  //   const handleFetchFilms = async () => {
-  //     try {
-  //       let films = [];
-  //       const isFilmsLocalstorage = JSON.parse(localStorage.getItem("films"));
-  //       if (isFilmsLocalstorage) {
-  //         films = isFilmsLocalstorage;
-  //       } else {
-  //         films = await fetchFilms(); //выходит, что при каждом изменении стейта идет запрос на сервер?
-  //         //localStorage.setItem('films', JSON.stringify(films)); // какой из них надо удалить - этот?
-  //       }
-
-  //       setState((state) => ({
-  //         ...state,
-  //         films,
-  //       }));
-  //     } catch (error) {
-  //       setState((state) => ({
-  //         ...state,
-  //         error: error.errorText,
-  //       }));
-  //     } finally {
-  //       setState((state) => ({
-  //         ...state,
-  //         isLoading: false,
-  //       }));
-  //     }
-  //   };
-  //   handleFetchFilms();
-  // }, []);
-
   const filtredFilms = useMemo(() => {
     const { films } = state;
     if (state.isLoading || search === "") {
@@ -61,7 +26,7 @@ export const useMovies = (fetchFilms) => {
       const handleFetchFilms = async () => {
         try {
           let films = [];
-          films = await fetchFilms(); //выходит, что при каждом изменении стейта идет запрос на сервер?
+          films = await fetchFilms();
 
           setState((state) => ({
             ...state,
@@ -91,7 +56,7 @@ export const useMovies = (fetchFilms) => {
 
     for (const film of films) {
       const { nameRU, duration } = film;
-      const searched = search && nameRU.includes(search);
+      const searched = search && nameRU.includes(search.toLowerCase());
       const short = shortFilms && duration < SHORT_DURATION;
 
       if (search && shortFilms) {
@@ -112,7 +77,7 @@ export const useMovies = (fetchFilms) => {
         }
       }
     }
-    localStorage.setItem("searchedFilms", JSON.stringify(result)); // какой из них надо удалить - этот?
+    localStorage.setItem("searchedFilms", JSON.stringify(result));
     return result;
   }, [search, shortFilms, state.isLoading]);
 
