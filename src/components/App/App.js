@@ -15,22 +15,16 @@ import Popup from "../Popup/Popup";
 import ProtectedRoute from "../ProtectedRoute/ProtectedRoute";
 import MainApi from "../../utils/MainApi";
 import { auth } from "../../utils/auth";
-import { useMovies } from "../../hooks/useMovies";
-
-import moviesApi from "../../utils/MoviesApi";
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState({});
   const [isLoading, setIsLoading] = useState(false);
-  //const [savedMovies, setSavedMovies] = useState([]);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
-
-  const moviesHook = useMovies(moviesApi.getMovies);
 
   const mainApi = new MainApi({
     url: "https://api.katyzhe.nomoredomains.rocks",
@@ -155,7 +149,6 @@ const App = () => {
             path="/movies"
             element={
               <ProtectedRoute
-                moviesHook={moviesHook}
                 isLoading={isLoading}
                 component={Movies}
                 isLoggedIn={isLoggedIn}

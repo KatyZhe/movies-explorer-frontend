@@ -9,7 +9,7 @@ import MainApi from "../../utils/MainApi";
 import Footer from "../Footer/Footer";
 import { useMovies } from "../../hooks/useMovies";
 
-const Movies = ({ moviesHook }) => {
+const Movies = () => {
   //const [films, setFilms] = useState(null);
   const [filmsSaved, setFilmsSaved] = useState(null);
   const [preloader, setPreloader] = useState(false);
@@ -25,7 +25,7 @@ const Movies = ({ moviesHook }) => {
     initFilms,
     shortFilms,
     search,
-  } = moviesHook;
+  } = useMovies(moviesApi.getMovies);
 
   const mainApi = new MainApi({
     url: "https://api.katyzhe.nomoredomains.rocks",

@@ -3,15 +3,16 @@ import "./SearchForm.css";
 
 const SearchForm = ({ handleShortFilms, shortFilms, handleSetSearch, search }) => {
 const [input, setInput] = useState(search);
+const [checked, setChecked] = useState(shortFilms);
 
   function handleInputChange(evt) {
     setInput(evt.target.value);
   }
 
   function handleTumblerChange(evt) {
-    evt.preventDefault();
-    const newTumbler = !shortFilms;
+    const newTumbler = !checked;
     handleShortFilms(newTumbler);
+    setChecked(newTumbler);
   }
 
   function handleSubmit(evt) {
@@ -44,8 +45,7 @@ const [input, setInput] = useState(search);
             <input
               type="checkbox"
               className="search__checkbox"
-              value={!shortFilms}
-              checked={!shortFilms}
+              checked={!checked}
               onChange={handleTumblerChange}
             />
             <span className="search__slider" />
