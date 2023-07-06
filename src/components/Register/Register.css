@@ -1,0 +1,128 @@
+.register__container {
+  margin: 0;
+  padding: 0;
+  padding-top: 70px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+  width: 396px;
+}
+
+.register__header {
+  width: 100%;
+  margin-bottom: 40px;
+}
+
+.register__logo {
+  width: 38px;
+  height: 38px;
+  margin-bottom: 40px;
+}
+
+.register__title {
+  margin: 0;
+  padding: 0;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.register__form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.register__label {
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #a0a0a0;
+  margin-bottom: 10px;
+}
+
+.register__input {
+  background-color: #f9f9f9;
+  border: none;
+  border-radius: 8px;
+  width: calc(100% - 30px);
+  padding: 15px;
+  margin: auto;
+  margin-bottom: 4px;
+}
+
+.register__error {
+  width: calc(100% - 30px);
+  height: 12px;
+  font-weight: 400;
+  font-size: 10px;
+  line-height: 12px;
+  color: #EE3465;
+  margin-bottom: 12px;
+}
+
+.register__button {
+  background-color: #ff6838;
+  border: none;
+  border-radius: 3px;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  color: #ffffff;
+  width: 100%;
+  text-align: center;
+  padding: 13px 0 15px;
+  margin: auto;
+  margin-top: 69px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.register__button:disabled {
+  background-color: #a0a0a0;
+}
+
+.register__bottom {
+  color: #a0a0a0;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 17px;
+}
+
+.register__link {
+  color: #ff6838;
+  margin-left: 6px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+@media screen and (min-width: 320px) and (max-width: 767px) {
+  .register__container {
+    max-width: 320px;
+    margin: 0 auto;
+    margin-bottom: 157px;
+  }
+
+  .register__header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+
+  .register__logo {
+    margin-top: 56px;
+    margin-bottom: 50px;
+  }
+
+  .register__button {
+    margin-bottom: 14px;
+    max-width: 320px;
+  }
+}
+
