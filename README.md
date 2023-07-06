@@ -1,6 +1,6 @@
 # Frontend for Yandex Prakticum Diploma
 
-Ссылка на макет: https://disk.yandex.ru/d/RHLJJoKIUQb5ZA
+Ссылка на макет: https://disk.yandex.ru/d/RHLJJoKIUQb5ZA  
 Ссылка на фронтенд: https://katyzhe.nomoredomains.rocks
 
 Сделан финальный проект на веб-факультете в @yandex.practicum.  
